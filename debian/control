@@ -1,9 +1,9 @@
 Source: libgc
 Maintainer: Ryan Murray <rmurray@debian.org>
-Section: devel
-Priority: optional
-Build-Depends: debhelper (>= 4)
-Standards-Version: 3.6.0
+Section: libs
+Priority: standard
+Build-Depends: debhelper
+Standards-Version: 3.6.1
 
 Package: libgc1
 Architecture: any
@@ -15,6 +15,7 @@ Description: Conservative garbage collector for C and C++
 
 Package: libgc-dev
 Architecture: any
+Priority: optional
 Section: libdevel
 Depends: libgc1 (= ${Source-Version}), libc-dev
 Replaces: libgc5-dev
