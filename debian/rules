@@ -16,7 +16,7 @@ build-stamp:
 	
 	# First build the shared library
 	./configure --enable-cplusplus --disable-dependency-tracking \
-		--prefix=/usr --mandir=\$${prefix}/share/man \
+		--with-tags=CXX --prefix=/usr --mandir=\$${prefix}/share/man \
 		--sysconfdir=/etc --localstatedir=/var/lib \
 		--datadir=\$${prefix}/share/doc
 	$(MAKE)
