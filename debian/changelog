@@ -1,3 +1,9 @@
+libgc (1:6.3-1) unstable; urgency=low
+
+  * New upstream release (closes: #253171)
+
+ -- Ryan Murray <rmurray@debian.org>  Fri,  9 Jul 2004 08:38:53 -0700
+
 libgc (1:6.2+6.3alpha4-1) unstable; urgency=low
 
   * New upstream release

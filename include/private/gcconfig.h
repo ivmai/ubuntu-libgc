@@ -2,7 +2,7 @@
  * Copyright 1988, 1989 Hans-J. Boehm, Alan J. Demers
  * Copyright (c) 1991-1994 by Xerox Corporation.  All rights reserved.
  * Copyright (c) 1996 by Silicon Graphics.  All rights reserved.
- * Copyright (c) 2000 by Hewlett-Packard Company.  All rights reserved.
+ * Copyright (c) 2000-2004 Hewlett-Packard Development Company, L.P.
  *
  * THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY EXPRESSED
  * OR IMPLIED.  ANY USE IS AT YOUR OWN RISK.
@@ -310,6 +310,10 @@
 #   define I386
 #   define mach_type_known
 # endif
+# if defined(__NetBSD__) && defined(__x86_64__)
+#    define X86_64
+#    define mach_type_known
+# endif
 # if defined(bsdi) && (defined(i386) || defined(__i386__))
 #    define I386
 #    define BSDI
@@ -349,6 +353,11 @@
 #     define I386
 #     define MSWIN32	/* or Win32s */
 #     define mach_type_known
+#   endif
+#   if defined(_MSC_VER) && defined(_M_IA64)
+#     define IA64
+#     define MSWIN32	/* Really win64, but we don't treat 64-bit 	*/
+			/* variants as a differnt platform.		*/
 #   endif
 # endif
 # if defined(__DJGPP__)
@@ -600,8 +609,14 @@
 #   ifdef OPENBSD
 #	define OS_TYPE "OPENBSD"
 #	define HEURISTIC2
-	extern char etext[];
-#	define DATASTART ((ptr_t)(etext))
+#	ifdef __ELF__
+#	  define DATASTART GC_data_start
+#	  define DYNAMIC_LOADING
+#	else
+	  extern char etext[];
+#	  define DATASTART ((ptr_t)(etext))
+#       endif
+#       define USE_GENERIC_PUSH_REGS
 #   endif
 #   ifdef NETBSD
 #	define OS_TYPE "NETBSD"
@@ -613,6 +628,7 @@
 	  extern char etext[];
 #	  define DATASTART ((ptr_t)(etext))
 #       endif
+#	define USE_GENERIC_PUSH_REGS
 #   endif
 #   ifdef LINUX
 #       define OS_TYPE "LINUX"
@@ -926,10 +942,17 @@
 
 # ifdef I386
 #   define MACH_TYPE "I386"
-#   define ALIGNMENT 4	/* Appears to hold for all "32 bit" compilers	*/
+#   if defined(__LP64__) || defined(_WIN64)
+#     define CPP_WORDSZ 64
+#     define ALIGNMENT 8
+#   else
+#     define CPP_WORDSZ 32
+#     define ALIGNMENT 4
+			/* Appears to hold for all "32 bit" compilers	*/
 			/* except Borland.  The -a4 option fixes 	*/
 			/* Borland.					*/
                         /* Ivan Demakov: For Watcom the option is -zp4. */
+#   endif
 #   ifndef SMALL_CONFIG
 #     define ALIGN_DOUBLE /* Not strictly necessary, but may give speed   */
 			  /* improvement on Pentiums.			  */
@@ -1074,6 +1097,8 @@
 #            define DATASTART ((ptr_t)((((word) (etext)) + 0xfff) & ~0xfff))
 #       endif
 #	ifdef USE_I686_PREFETCH
+	  /* FIXME: Thus should use __builtin_prefetch, but we'll leave that	*/
+	  /* for the next rtelease.						*/
 #	  define PREFETCH(x) \
 	    __asm__ __volatile__ ("	prefetchnta	%0": : "m"(*(char *)(x)))
 	    /* Empirically prefetcht0 is much more effective at reducing	*/
@@ -1612,21 +1637,34 @@
 #       ifdef __GNUC__
 #	  ifndef __INTEL_COMPILER
 #	    define PREFETCH(x) \
-	      __asm__ ("	lfetch	[%0]": : "r"((void *)(x)))
+	      __asm__ ("	lfetch	[%0]": : "r"(x))
 #	    define PREFETCH_FOR_WRITE(x) \
-	      __asm__ ("	lfetch.excl	[%0]": : "r"((void *)(x)))
+	      __asm__ ("	lfetch.excl	[%0]": : "r"(x))
 #	    define CLEAR_DOUBLE(x) \
 	      __asm__ ("	stf.spill	[%0]=f0": : "r"((void *)(x)))
 #	  else
 #           include <ia64intrin.h>
 #	    define PREFETCH(x) \
-	      __lfetch(__lfhint_none, (void*)(x))
+	      __lfetch(__lfhint_none, (x))
 #	    define PREFETCH_FOR_WRITE(x) \
-	      __lfetch(__lfhint_nta,  (void*)(x))
+	      __lfetch(__lfhint_nta,  (x))
 #	    define CLEAR_DOUBLE(x) \
 	      __stf_spill((void *)(x), 0)
 #	  endif // __INTEL_COMPILER
 #       endif
+#   endif
+#   ifdef MSWIN32
+      /* FIXME: This is a very partial guess.  There is no port, yet.	*/
+#     define OS_TYPE "MSWIN32"
+		/* STACKBOTTOM and DATASTART are handled specially in 	*/
+		/* os_dep.c.						*/
+#     define DATAEND  /* not needed */
+#     if defined(_WIN64)
+#       define CPP_WORDSZ 64
+#     else
+#       define CPP_WORDSZ 32   /* Is this possible?	*/
+#     endif
+#     define ALIGNMENT 8
 #   endif
 # endif
 
@@ -1815,10 +1853,19 @@
 	     extern int etext[];
 #            define DATASTART ((ptr_t)((((word) (etext)) + 0xfff) & ~0xfff))
 #       endif
-#	define PREFETCH(x) \
-	  __asm__ __volatile__ ("	prefetch	%0": : "m"(*(char *)(x)))
-#	define PREFETCH_FOR_WRITE(x) \
-	  __asm__ __volatile__ ("	prefetchw	%0": : "m"(*(char *)(x)))
+#       if defined(__GNUC__) && __GNUC >= 3
+#	    define PREFETCH(x) __builtin_prefetch((x), 0, 0)
+#	    define PREFETCH_FOR_WRITE(x) __builtin_prefetch((x), 1)
+#	endif
+#   endif
+#   ifdef NETBSD
+#	define OS_TYPE "NETBSD"
+#	ifdef __ELF__
+#	    define DYNAMIC_LOADING
+#	endif
+#	define HEURISTIC2
+	extern char etext[];
+#	define SEARCH_FOR_DATA_START
 #   endif
 # endif
 
@@ -1879,6 +1926,10 @@
 # endif
 
 # if defined(HPUX)
+#   define SUNOS5SIGS
+# endif
+
+# if defined(FREEBSD) && (__FreeBSD__ >= 4)
 #   define SUNOS5SIGS
 # endif
 
@@ -1998,6 +2049,10 @@
 	/* The define should move to the individual platform 		*/
 	/* descriptions.						*/
 #	define USE_GENERIC_PUSH_REGS
+# endif
+
+# if defined(MSWINCE)
+#   define NO_GETENV
 # endif
 
 # if defined(SPARC)
