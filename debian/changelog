@@ -1,3 +1,15 @@
+libgc (1:6.4-1ubuntu1) breezy; urgency=low
+
+  * CXX transition, rename libgc1 to libgc1c2.
+
+ -- Matthias Klose <doko@ubuntu.com>  Thu, 12 May 2005 08:17:25 +0000
+
+libgc (1:6.4-1) unstable; urgency=low
+
+  * New upstream release (closes: #292708)
+
+ -- Ryan Murray <rmurray@debian.org>  Thu,  3 Feb 2005 00:50:53 -0800
+
 libgc (1:6.3-1) unstable; urgency=low
 
   * New upstream release (closes: #253171)

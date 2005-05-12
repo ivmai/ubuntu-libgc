@@ -5,11 +5,13 @@ Priority: standard
 Build-Depends: debhelper
 Standards-Version: 3.6.1
 
-Package: libgc1
+Package: libgc1c2
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}
-Description: Conservative garbage collector for C and C++
+Conflicts: libgc1
+Replaces: libgc1
+Description: conservative garbage collector for C and C++
  Boehm's GC is a garbage collecting storage allocator that is
  intended to be used as a plug-in replacement for C's malloc.
 
@@ -17,10 +19,10 @@ Package: libgc-dev
 Architecture: any
 Priority: optional
 Section: libdevel
-Depends: libgc1 (= ${Source-Version}), libc-dev
+Depends: libgc1c2 (= ${Source-Version}), libc-dev
 Replaces: libgc5-dev
 Conflicts: libgc6-dev
-Description: Conservative garbage collector for C (development)
+Description: conservative garbage collector for C (development)
  Boehm's GC is a garbage collecting storage allocator that is
  intended to be used as a plug-in replacement for C's malloc.
  This package is required to compile and link programs that use
