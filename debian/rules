@@ -20,7 +20,7 @@ build-stamp:
 	dh_testdir
 	
 	# First build the shared library
-	./configure $(CONFIG_OPTS) --enable-cplusplus --disable-dependency-tracking\
+	./configure $(CONFIG_OPTS) --enable-cplusplus --disable-dependency-tracking \
 		--with-tags=CXX --prefix=/usr --mandir=\$${prefix}/share/man\
 		--sysconfdir=/etc --localstatedir=/var/lib\
 		--datadir=\$${prefix}/share/doc

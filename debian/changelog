@@ -1,3 +1,22 @@
+libgc (1:6.7-2ubuntu1) edgy; urgency=low
+
+  * Merge from debian unstable.
+
+ -- Fabio M. Di Nitto <fabbione@ubuntu.com>  Mon, 03 Jul 2006 14:30:13 +0200
+
+libgc (1:6.7-2) unstable; urgency=low
+
+  * Disable --enable-redirect-malloc again (closes: #371886)
+
+ -- Ryan Murray <rmurray@debian.org>  Tue, 13 Jun 2006 17:28:27 -0700
+
+libgc (1:6.7-1) unstable; urgency=low
+
+  * New upstream release (closes: #356246)
+  * Fix typo in description (closes: #341086)
+
+ -- Ryan Murray <rmurray@debian.org>  Sun, 28 May 2006 20:19:58 -0700
+
 libgc (1:6.6-2ubuntu1) dapper; urgency=low
 
   * Use THREAD_LOCAL_ALLOC on sparc.
