@@ -1,5 +1,6 @@
 Source: libgc
-Maintainer: Ryan Murray <rmurray@debian.org>
+Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Ryan Murray <rmurray@debian.org>
 Section: libs
 Priority: standard
 Build-Depends: debhelper
