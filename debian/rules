@@ -20,7 +20,7 @@ build-stamp:
 	dh_testdir
 	
 	# First build the shared library
-	./configure $(CONFIG_OPTS) --enable-cplusplus --disable-dependency-tracking\
+	./configure $(CONFIG_OPTS) --enable-cplusplus --disable-dependency-tracking \
 		--with-tags=CXX --prefix=/usr --mandir=\$${prefix}/share/man\
 		--sysconfdir=/etc --localstatedir=/var/lib\
 		--datadir=\$${prefix}/share/doc
@@ -61,7 +61,7 @@ binary-arch: build install
 	dh_strip
 	dh_compress
 	dh_fixperms
-	dh_makeshlibs
+	dh_makeshlibs -V 'libgc1c2 (>= 1:6.8-1.1)'
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
