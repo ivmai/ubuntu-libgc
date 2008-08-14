@@ -1,3 +1,10 @@
+libgc (1:6.8-1.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Apply patch support for GNU/kFreeBSD amd64. (closes: #405669)
+
+ -- Aurelien Jarno <aurel32@debian.org>  Thu, 14 Aug 2008 21:21:44 +0200
+
 libgc (1:6.8-1.1) unstable; urgency=low
 
   * Non-maintainer upload.
