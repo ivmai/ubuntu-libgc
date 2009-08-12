@@ -1,3 +1,29 @@
+libgc (1:7.1-1) experimental; urgency=low
+
+  * New maintainer. (Closes: #541015)
+  * New upstream release. (Closes: #434106, #446068)
+  * Fix debian/watch file. Thanks Jonny <jonny@csc.jp> and Ruben Molina
+    <rmolina@udea.edu.co>. (Closes: #535985)
+  * debian/patches/*
+    - Extract changes from .diff.gz into quilt patch series
+    - Update architecture patches for new upstream; partly applied upstream
+  * Move to debhelper 7.
+  * Add symbols file for libgc1c2.
+  * debian/control:
+    - Bump Standards-Version to 3.8.2.
+    - Add Homepage: field.
+    - Add ${misc:Depends} for all binary packages.
+    - Use ${binary:Version} in libgc-dev => libgcX versioned dependency.
+    - Drop duplicate "Section:" heading in libgc1c2.
+    - Update long description, clarifying ambiguity caused by Debian's choice
+      of configuration. (Closes: #329338)
+  * Remove some cruft from debian/rules.
+  * Install README.environment via dh_installdocs, not dh_install.
+  * Don't install README.cords if we aren't shipping that library
+    (Closes: #422440)
+
+ -- Chris Lamb <lamby@debian.org>  Wed, 12 Aug 2009 02:16:30 +0100
+
 libgc (1:6.8-1.2) unstable; urgency=low
 
   * Non-maintainer upload.
