@@ -5,6 +5,8 @@ Priority: standard
 Build-Depends: debhelper (>= 7), quilt, autoconf
 Standards-Version: 3.8.2
 Homepage: http://www.hpl.hp.com/personal/Hans_Boehm/gc/
+Vcs-Git: git://git.chris-lamb.co.uk/debian/pkg-libgc.git
+Vcs-Browser: http://git.chris-lamb.co.uk/?p=debian/pkg-libgc.git
 
 Package: libgc1c2
 Architecture: any
