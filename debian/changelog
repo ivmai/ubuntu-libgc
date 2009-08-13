@@ -1,3 +1,16 @@
+libgc (1:7.1-2) experimental; urgency=low
+
+  * Fix FTBFS on sparc by specifying correct machine-dependent code.
+  * Fix FTBFS on s390 by correcting #include directory.
+  * Add avr32 support. Patch by Bradley Smith <brad@brad-smith.co.uk>.
+    (Closes: #528406)
+  * Symbols maintenance:
+    - Add Build-Depends-Package
+    - Add required arch-dependent symbols for sparc, powerpc, s390 and avr32
+  * Add Vcs-{Git,Browser} headers.
+
+ -- Chris Lamb <lamby@debian.org>  Fri, 14 Aug 2009 00:15:45 +0100
+
 libgc (1:7.1-1) experimental; urgency=low
 
   * New maintainer. (Closes: #541015)
