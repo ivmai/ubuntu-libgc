@@ -1,3 +1,11 @@
+libgc (1:6.8-1.2ubuntu2) maverick; urgency=low
+
+  * Fix the check for GC_test_and_set and GC_clear on armel. The sync
+    primitives are backported to the gcc-4.4 package. Fixes the
+    build failure on armel in thumb mode. LP: #635406.
+
+ -- Matthias Klose <doko@ubuntu.com>  Sun, 19 Sep 2010 18:23:16 +0200
+
 libgc (1:6.8-1.2ubuntu1) lucid; urgency=low
 
   * include/private/gc_locks.h: For __ARM_EABI__ define
