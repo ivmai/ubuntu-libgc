@@ -1,12 +1,5 @@
 libgc.so.1 libgc1c2 #MINVER#
 * Build-Depends-Package: libgc-dev
- AO_compare_and_swap_emulation@Base 1:7.1
- AO_compare_double_and_swap_double_emulation@Base 1:7.1
- AO_locks@Base 1:7.1
- AO_pause@Base 1:7.1
- AO_pt_lock@Base 1:7.1
- AO_spin@Base 1:7.1
- AO_store_full_emulation@Base 1:7.1
  GC_abort@Base 1:7.1
  GC_acquire_mark_lock@Base 1:7.1
  GC_add_ext_descriptor@Base 1:7.1
@@ -520,6 +513,4 @@ libgccpp.so.1 libgc1c2 #MINVER#
  _ZdaPv@Base 1:7.1
  _ZdlPv@Base 1:7.1
  _Znaj@Base 1:7.1-2
-#MISSING: 1:7.1-2# _Znam@Base 1:7.1
  _Znwj@Base 1:7.1-2
-#MISSING: 1:7.1-2# _Znwm@Base 1:7.1

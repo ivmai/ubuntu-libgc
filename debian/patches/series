@@ -2,4 +2,4 @@
 02-manpage.diff
 03-add-avr32-support.diff
 04-fix-sparc-ftbfs.diff
-05-s390-includes.diff
+

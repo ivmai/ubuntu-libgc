@@ -1,3 +1,19 @@
+libgc (1:7.1-4) experimental; urgency=low
+
+  * Adopt package (Closes: #590772)
+    * Adopt debian/control git headers (moved to collab-maint)
+    * Convert to source format 3.0 (quilt)
+  * Build against system libatomic-ops (Closes: #559345)
+    * Now builds on mipsen as well (Closes: #542285)
+    * Include correct arch-specific symbols file for mipsen
+    * Remove atomic-ops specific symbols from symbols file
+    * Drop patch for automic-ops on s390
+  * Fix dependency on debhelper (needs 7.0.50 > 7)
+  * Bump standards version to 3.9.1
+  * Fix symbol files (Closes: #565778)
+
+ -- Christoph Egger <christoph@debian.org>  Sat, 09 Oct 2010 16:08:53 +0200
+
 libgc (1:7.1-3) experimental; urgency=low
 
   * Add symbols for armel and i386.
