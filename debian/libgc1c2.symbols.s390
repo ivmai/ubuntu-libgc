@@ -1,12 +1,5 @@
 libgc.so.1 libgc1c2 #MINVER#
 * Build-Depends-Package: libgc-dev
- AO_compare_and_swap_emulation@Base 1:7.1
- AO_compare_double_and_swap_double_emulation@Base 1:7.1
- AO_locks@Base 1:7.1
- AO_pause@Base 1:7.1
- AO_pt_lock@Base 1:7.1
- AO_spin@Base 1:7.1
- AO_store_full_emulation@Base 1:7.1
  GC_abort@Base 1:7.1
  GC_acquire_mark_lock@Base 1:7.1
  GC_add_ext_descriptor@Base 1:7.1
@@ -86,7 +79,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_core_malloc@Base 1:7.1
  GC_core_malloc_atomic@Base 1:7.1
  GC_current_warn_proc@Base 1:7.1
-#MISSING: 1:7.1-1# GC_data_start@Base 1:7.1
  GC_debug_change_stubborn@Base 1:7.1
  GC_debug_end_stubborn_change@Base 1:7.1
  GC_debug_free@Base 1:7.1
@@ -161,7 +153,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_ext_descriptors@Base 1:7.1
  GC_extend_size_map@Base 1:7.1
  GC_fail_count@Base 1:7.1
-#MISSING: 1:7.1-1# GC_fault_handler@Base 1:7.1
  GC_finalization_failures@Base 1:7.1
  GC_finalize@Base 1:7.1
  GC_finalize_all@Base 1:7.1
@@ -170,8 +161,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_finalizer_notifier@Base 1:7.1
  GC_find_header@Base 1:7.1
  GC_find_leak@Base 1:7.1
-#MISSING: 1:7.1-1# GC_find_limit@Base 1:7.1
-#MISSING: 1:7.1-1# GC_find_limit_with_bound@Base 1:7.1
  GC_finish_collection@Base 1:7.1
  GC_fl_builder_count@Base 1:7.1
  GC_fo_entries@Base 1:7.1
@@ -234,7 +223,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_init_gcj_malloc@Base 1:7.1
  GC_init_headers@Base 1:7.1
  GC_init_inner@Base 1:7.1
-#MISSING: 1:7.1-1# GC_init_linux_data_start@Base 1:7.1
  GC_init_parallel@Base 1:7.1
  GC_init_size_map@Base 1:7.1
  GC_init_thread_local@Base 1:7.1
@@ -255,7 +243,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_is_visible@Base 1:7.1
  GC_is_visible_print_proc@Base 1:7.1
  GC_java_finalization@Base 1:7.1
-#MISSING: 1:7.1-1# GC_jmp_buf@Base 1:7.1
  GC_large_alloc_warn_interval@Base 1:7.1
  GC_large_alloc_warn_suppressed@Base 1:7.1
  GC_leaked@Base 1:7.1
@@ -333,11 +320,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_obj_kinds@Base 1:7.1
  GC_objects_are_marked@Base 1:7.1
  GC_objfreelist_ptr@Base 1:7.1
-#MISSING: 1:7.1-1# GC_old_bus_handler@Base 1:7.1
-#MISSING: 1:7.1-1# GC_old_bus_handler_used_si@Base 1:7.1
  GC_old_normal_bl@Base 1:7.1
-#MISSING: 1:7.1-1# GC_old_segv_handler@Base 1:7.1
-#MISSING: 1:7.1-1# GC_old_segv_handler_used_si@Base 1:7.1
  GC_old_stack_bl@Base 1:7.1
  GC_on_stack@Base 1:7.1
  GC_oom_fn@Base 1:7.1
@@ -371,7 +354,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_printf@Base 1:7.1
  GC_project2@Base 1:7.1
  GC_promote_black_lists@Base 1:7.1
-#MISSING: 1:7.1-1# GC_protect_heap@Base 1:7.1
  GC_pthread_create@Base 1:7.1
  GC_pthread_detach@Base 1:7.1
  GC_pthread_join@Base 1:7.1
@@ -436,7 +418,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_remove_roots_inner@Base 1:7.1
  GC_remove_tmp_roots@Base 1:7.1
  GC_repeat_read@Base 1:7.1
-#MISSING: 1:7.1-1# GC_reset_fault_handler@Base 1:7.1
  GC_restart_handler@Base 1:7.1
  GC_retry_signals@Base 1:7.1
  GC_root_size@Base 1:7.1
@@ -452,7 +433,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_set_max_heap_size@Base 1:7.1
  GC_set_warn_proc@Base 1:7.1
  GC_setpagesize@Base 1:7.1
-#MISSING: 1:7.1-1# GC_setup_temporary_fault_handler@Base 1:7.1
  GC_should_collect@Base 1:7.1
  GC_should_invoke_finalizers@Base 1:7.1
  GC_signal_mark_stack_overflow@Base 1:7.1
@@ -513,8 +493,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_world_is_stopped@Base 1:7.1
  GC_world_stopped@Base 1:7.1
  GC_write@Base 1:7.1
-#MISSING: 1:7.1-1# GC_write_fault_handler@Base 1:7.1
-#MISSING: 1:7.1-1# async_set_pht_entry_from_index@Base 1:7.1
  free_list_index_of@Base 1:7.1
 libgccpp.so.1 libgc1c2 #MINVER#
  _ZdaPv@Base 1:7.1

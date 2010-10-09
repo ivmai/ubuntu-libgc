@@ -11,9 +11,10 @@ else
 endif
 
 %:
-	dh --with quilt $@
+	dh $@
 
 override_dh_auto_configure:
+	[ ! -d libatomic_ops-1.2 ] || mv libatomic_ops-1.2 libatomic_ops-1.2.bak
 	autoconf
 	./configure \
 		$(CONFIG_OPTS) \
@@ -33,6 +34,7 @@ override_dh_install:
 	dh_install
 
 override_dh_auto_clean:
+	[ -d libatomic_ops-1.2 ] || [ ! -d libatomic_ops-1.2.bak ] || mv libatomic_ops-1.2.bak libatomic_ops-1.2
 	dh_auto_clean
 	rm -rf autom4te.cache libatomic_ops atomic_ops_sysdeps.S atomic_ops.c
 

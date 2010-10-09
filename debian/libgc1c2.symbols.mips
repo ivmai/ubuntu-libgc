@@ -79,7 +79,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_core_malloc@Base 1:7.1
  GC_core_malloc_atomic@Base 1:7.1
  GC_current_warn_proc@Base 1:7.1
- GC_data_start@Base 1:7.1
  GC_debug_change_stubborn@Base 1:7.1
  GC_debug_end_stubborn_change@Base 1:7.1
  GC_debug_free@Base 1:7.1
@@ -154,7 +153,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_ext_descriptors@Base 1:7.1
  GC_extend_size_map@Base 1:7.1
  GC_fail_count@Base 1:7.1
- GC_fault_handler@Base 1:7.1
  GC_finalization_failures@Base 1:7.1
  GC_finalize@Base 1:7.1
  GC_finalize_all@Base 1:7.1
@@ -163,8 +161,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_finalizer_notifier@Base 1:7.1
  GC_find_header@Base 1:7.1
  GC_find_leak@Base 1:7.1
- GC_find_limit@Base 1:7.1
- GC_find_limit_with_bound@Base 1:7.1
  GC_finish_collection@Base 1:7.1
  GC_fl_builder_count@Base 1:7.1
  GC_fo_entries@Base 1:7.1
@@ -227,7 +223,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_init_gcj_malloc@Base 1:7.1
  GC_init_headers@Base 1:7.1
  GC_init_inner@Base 1:7.1
- GC_init_linux_data_start@Base 1:7.1
  GC_init_parallel@Base 1:7.1
  GC_init_size_map@Base 1:7.1
  GC_init_thread_local@Base 1:7.1
@@ -248,8 +243,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_is_visible@Base 1:7.1
  GC_is_visible_print_proc@Base 1:7.1
  GC_java_finalization@Base 1:7.1
- GC_jmp_buf@Base 1:7.1
- GC_key_create@Base 1:7.1-2
  GC_large_alloc_warn_interval@Base 1:7.1
  GC_large_alloc_warn_suppressed@Base 1:7.1
  GC_leaked@Base 1:7.1
@@ -423,10 +416,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_remove_protection@Base 1:7.1
  GC_remove_roots@Base 1:7.1
  GC_remove_roots_inner@Base 1:7.1
- GC_remove_specific@Base 1:7.1-2
  GC_remove_tmp_roots@Base 1:7.1
  GC_repeat_read@Base 1:7.1
- GC_reset_fault_handler@Base 1:7.1
  GC_restart_handler@Base 1:7.1
  GC_retry_signals@Base 1:7.1
  GC_root_size@Base 1:7.1
@@ -442,13 +433,10 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_set_max_heap_size@Base 1:7.1
  GC_set_warn_proc@Base 1:7.1
  GC_setpagesize@Base 1:7.1
- GC_setspecific@Base 1:7.1-2
- GC_setup_temporary_fault_handler@Base 1:7.1
  GC_should_collect@Base 1:7.1
  GC_should_invoke_finalizers@Base 1:7.1
  GC_signal_mark_stack_overflow@Base 1:7.1
  GC_size@Base 1:7.1
- GC_slow_getspecific@Base 1:7.1-2
  GC_smashed@Base 1:7.1
  GC_spin_count@Base 1:7.1
  GC_split_block@Base 1:7.1
@@ -509,5 +497,5 @@ libgc.so.1 libgc1c2 #MINVER#
 libgccpp.so.1 libgc1c2 #MINVER#
  _ZdaPv@Base 1:7.1
  _ZdlPv@Base 1:7.1
- _Znaj@Base 1:7.1-2
- _Znwj@Base 1:7.1-2
+ _Znaj@Base 1:7.1
+ _Znwj@Base 1:7.1
