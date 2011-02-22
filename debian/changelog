@@ -1,3 +1,12 @@
+libgc (1:7.1-6) unstable; urgency=low
+
+  * include pkg-config file (Closes: #546833)
+  * Include Hurd symbol file (Closes: #611643) thanks to Svante Signell
+    for providing it
+  * add hppa symbol file
+
+ -- Christoph Egger <christoph@debian.org>  Tue, 22 Feb 2011 17:17:54 +0100
+
 libgc (1:7.1-5) unstable; urgency=low
 
   * Upload to unstable
