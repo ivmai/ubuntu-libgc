@@ -1,3 +1,16 @@
+libgc (1:7.1-7) unstable; urgency=low
+
+  * Add ppc64 symbol file (Closes: #615469)
+  * Add sh4 symbol file (Closes: #614744)
+  * Add armhf symbol file
+  * Add powerpcspe symbol file
+  * Handle sparc64 the same as sparc
+  * Clear non-arch symbol file to support building on not yet captured
+    architectures
+  * add -pthread to fix build with --no-add-needed
+
+ -- Christoph Egger <christoph@debian.org>  Wed, 02 Mar 2011 13:43:18 +0100
+
 libgc (1:7.1-6) unstable; urgency=low
 
   * include pkg-config file (Closes: #546833)
