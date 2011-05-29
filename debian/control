@@ -3,7 +3,7 @@ Maintainer: Christoph Egger <christoph@debian.org>
 Section: libs
 Priority: standard
 Build-Depends: debhelper (>= 7.0.50~), autoconf, libatomic-ops-dev (>= 7.2~)
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Homepage: http://www.hpl.hp.com/personal/Hans_Boehm/gc/
 Vcs-Git: git://git.debian.org/git/collab-maint/libgc.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/libgc.git;a=summary

@@ -1,3 +1,15 @@
+libgc (1:7.1-8) unstable; urgency=low
+
+  * Import patch by Thorsten Glaser
+    * d/p/06-m68k-no-getcontext.diff: new, don’t use getcontext(2)
+      on m68k because it’s not implemented there (Closes: #624833)
+  * Import patch by Aaron M. Ucko
+    * build with GC_THREADS on non-linux platforms as well
+  * remove *.la files (Closes: #621660)
+  * update policy version from 3.9.1 to 3.9.2, no changes
+
+ -- Christoph Egger <christoph@debian.org>  Sun, 29 May 2011 18:55:21 +0200
+
 libgc (1:7.1-7) unstable; urgency=low
 
   * Add ppc64 symbol file (Closes: #615469)

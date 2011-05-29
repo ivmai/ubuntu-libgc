@@ -1,7 +1,6 @@
 usr/include
 usr/lib/libgc*.so
 usr/lib/libgc*.a
-usr/lib/libgc*.la
 usr/lib/pkgconfig/bdw-gc.pc
 usr/share/doc/gc/*.html usr/share/doc/libgc1c2
 usr/share/doc/gc/barrett_diagram usr/share/doc/libgc1c2
