@@ -1,3 +1,9 @@
+libgc (1:7.1-9) unstable; urgency=medium
+
+  * Import patches to fix CVE-2012-2673 from upstream git (Closes: #677195)
+
+ -- Christoph Egger <christoph@debian.org>  Sun, 08 Jul 2012 18:27:48 +0200
+
 libgc (1:7.1-8) unstable; urgency=low
 
   * Import patch by Thorsten Glaser
