@@ -1,3 +1,12 @@
+libgc (1:7.1-8ubuntu0.11.10.1) oneiric-security; urgency=low
+
+  * SECURITY UPDATE: multiple integer overflows
+    - debian/patches/CVE-2012-2673.patch: check for integer overflow in
+      internal malloc and calloc routines.
+    - CVE-2012-2673
+
+ -- Steve Beattie <sbeattie@ubuntu.com>  Wed, 01 Aug 2012 12:54:36 -0700
+
 libgc (1:7.1-8) unstable; urgency=low
 
   * Import patch by Thorsten Glaser
