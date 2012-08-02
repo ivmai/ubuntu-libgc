@@ -1,3 +1,12 @@
+libgc (1:6.8-1.2ubuntu3.2) natty-security; urgency=low
+
+  * SECURITY UPDATE: multiple integer overflows
+    - malloc.c, mallocx.c: check for integer overflow in internal
+      malloc and calloc routines.
+    - CVE-2012-2673
+
+ -- Steve Beattie <sbeattie@ubuntu.com>  Thu, 02 Aug 2012 13:32:21 -0700
+
 libgc (1:6.8-1.2ubuntu3) natty; urgency=low
 
   * No-change upload to reduce changelogs.
