@@ -181,6 +181,7 @@ register int k;
 {
     register ptr_t result;
     word lw;
+    size_t lb_rounded;
     word n_blocks;
     GC_bool init;
     DCL_LOCK_STATE;
@@ -188,6 +189,10 @@ register int k;
     if (SMALL_OBJ(lb))
         return(GC_generic_malloc((word)lb, k));
     lw = ROUNDED_UP_WORDS(lb);
+    lb_rounded = WORDS_TO_BYTES(lw);
+    if (lb_rounded < lb)
+        return((*GC_oom_fn)(lb));
+
     n_blocks = OBJ_SZ_TO_BLOCKS(lw);
     init = GC_obj_kinds[k].ok_init;
     if (GC_have_errors) GC_print_all_errors();

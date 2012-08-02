@@ -197,8 +197,13 @@ register int k;
     } else {
 	word lw;
 	word n_blocks;
+	size_t lb_rounded;
 	GC_bool init;
 	lw = ROUNDED_UP_WORDS(lb);
+	lb_rounded = WORDS_TO_BYTES(lw);
+	if (lb_rounded < lb)
+	  return((*GC_oom_fn)(lb));
+
 	n_blocks = OBJ_SZ_TO_BLOCKS(lw);
 	init = GC_obj_kinds[k].ok_init;
 	DISABLE_SIGNALS();
@@ -377,6 +382,15 @@ DCL_LOCK_STATE;
     return((GC_PTR)REDIRECT_MALLOC(lb));
   }
 
+#include <limits.h>
+#ifdef SIZE_MAX
+# define GC_SIZE_MAX SIZE_MAX
+#else
+# define GC_SIZE_MAX (~(size_t)0)
+#endif
+
+#define GC_SQRT_SIZE_MAX ((1U << (WORDSZ / 2)) - 1)
+
 # ifdef __STDC__
     GC_PTR calloc(size_t n, size_t lb)
 # else
@@ -384,6 +398,9 @@ DCL_LOCK_STATE;
     size_t n, lb;
 # endif
   {
+    if ((lb | n) > GC_SQRT_SIZE_MAX /* fast initial test */
+        && lb && n > GC_SIZE_MAX / lb)
+      return NULL;
     return((GC_PTR)REDIRECT_MALLOC(n*lb));
   }
 
