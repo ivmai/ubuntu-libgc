@@ -1,3 +1,14 @@
+libgc (1:6.8-2) stable; urgency=low
+
+  * Change maintainer to myself for stable as well
+  
+  * Use patch from Steve Beattie <sbeattie@ubuntu.com> / Ubuntu to fix
+    CVE-2012-2673 (Closes: #677195):
+      malloc.c, mallocx.c: check for integer overflow in internal
+      malloc and calloc routines.
+
+ -- Christoph Egger <christoph@debian.org>  Fri, 21 Sep 2012 10:58:18 -0700
+
 libgc (1:6.8-1.2) unstable; urgency=low
 
   * Non-maintainer upload.
