@@ -9,13 +9,18 @@ Index: b/autogen.sh
 -for v in 1.10 1.9 1.8 1.7; do
 -    if type -p &>/dev/null automake-$v; then
 +for v in 1.11 1.10 1.9 1.8 1.7; do
-+    if type -p automake-$v >/dev/null 2>&1; then
++    if which automake-$v --version >/dev/null 2>&1; then
  	am_version="-$v"
  	break
      fi
-@@ -24,8 +24,8 @@
- aclocal$am_version
- autoconf
+@@ -21,11 +21,11 @@
+ fi
+ 
+ set -x
+-aclocal$am_version
+-autoconf
++aclocal$am_version -Im4
++autoconf || autoconf
  autoheader
 +libtoolize --automake --force --copy
  automake$am_version -ac
