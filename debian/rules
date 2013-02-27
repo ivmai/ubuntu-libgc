@@ -3,17 +3,19 @@
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 DEB_BUILD_ARCH:=$(shell dpkg --print-architecture)
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 LDFLAGS += -pthread
 
 %:
-	dh $@
+	dh $@ --with autoreconf
 
 override_dh_auto_configure:
 	[ ! -d libatomic_ops-1.2 ] || mv libatomic_ops-1.2 libatomic_ops-1.2.bak
 	autoconf
 	./configure \
 		$(CONFIG_OPTS) \
+		--disable-silent-rules \
 		--enable-cplusplus \
 		--disable-dependency-tracking \
 		--with-tags=CXX \
@@ -23,7 +25,11 @@ override_dh_auto_configure:
 		--localstatedir=/var/lib \
 		--datadir=\$${prefix}/share/doc \
 		--host=$(DEB_HOST_GNU_TYPE) \
-		--build=$(DEB_BUILD_GNU_TYPE)
+		--build=$(DEB_BUILD_GNU_TYPE) \
+		--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
+
+override_dh_auto_test:
+	$(MAKE) check
 
 override_dh_install:
 	install -D doc/gc.man debian/tmp/usr/share/man/man3/gc_malloc.3

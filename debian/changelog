@@ -1,3 +1,13 @@
+libgc (1:7.2d-0ubuntu1) raring; urgency=low
+
+  * New upstream version.
+  * Install header files and libraries in multiarch locations (Christian
+    M. Amsüss). Closes: #687493.
+  * Build using dh-autoreconf.
+  * Rename libgc1c2 to libgc1c3; missing symbols.
+
+ -- Matthias Klose <doko@ubuntu.com>  Wed, 27 Feb 2013 10:39:11 +0100
+
 libgc (1:7.1-9.1) unstable; urgency=low
 
   * Non-maintainer upload.
