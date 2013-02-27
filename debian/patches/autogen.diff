@@ -1,0 +1,25 @@
+Index: b/autogen.sh
+===================================================================
+--- a/autogen.sh
++++ b/autogen.sh
+@@ -5,8 +5,8 @@
+ # These version are ok, pre-1.7 is not.  Post 1.7 may produce a lot of
+ # warnings for unrelated projects, so prefer 1.7 for now.
+ am_version=
+-for v in 1.10 1.9 1.8 1.7; do
+-    if type -p &>/dev/null automake-$v; then
++for v in 1.11 1.10 1.9 1.8 1.7; do
++    if type -p automake-$v >/dev/null 2>&1; then
+ 	am_version="-$v"
+ 	break
+     fi
+@@ -24,8 +24,8 @@
+ aclocal$am_version
+ autoconf
+ autoheader
++libtoolize --automake --force --copy
+ automake$am_version -ac
+-libtoolize --automake --force
+ set +x
+ echo
+ echo "Ready to run './configure'."

@@ -2,3 +2,4 @@
 02-manpage.diff
 #05-s390-includes.diff
 enable-threads.diff
+autogen.diff

@@ -10,9 +10,11 @@ LDFLAGS += -pthread
 %:
 	dh $@ --with autoreconf
 
+override_dh_autoreconf:
+	dh_autoreconf ./autogen.sh
+
 override_dh_auto_configure:
 	[ ! -d libatomic_ops-1.2 ] || mv libatomic_ops-1.2 libatomic_ops-1.2.bak
-	autoconf
 	./configure \
 		$(CONFIG_OPTS) \
 		--disable-silent-rules \
