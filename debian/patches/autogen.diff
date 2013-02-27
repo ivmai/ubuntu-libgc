@@ -19,10 +19,10 @@ Index: b/autogen.sh
  set -x
 -aclocal$am_version
 -autoconf
++libtoolize --automake --force --copy
 +aclocal$am_version -Im4
 +autoconf || autoconf
  autoheader
-+libtoolize --automake --force --copy
  automake$am_version -ac
 -libtoolize --automake --force
  set +x
