@@ -13,9 +13,12 @@ Index: b/autogen.sh
  	am_version="-$v"
  	break
      fi
-@@ -24,8 +24,8 @@
+@@ -22,10 +22,10 @@
+ 
+ set -x
  aclocal$am_version
- autoconf
+-autoconf
++autoconf || autoconf
  autoheader
 +libtoolize --automake --force --copy
  automake$am_version -ac
