@@ -1,3 +1,11 @@
+libgc (1:7.2d-1) experimental; urgency=low
+
+  * New upstream release (Closes: #673965)
+  * Add build-dependency for pkg-config to allow detection of libatomic_ops
+  * Import patch Christian M. Amsüss to enable multiarch (Closes: #687493)
+
+ -- Christoph Egger <christoph@debian.org>  Sun, 09 Jun 2013 13:26:37 +0200
+
 libgc (1:7.1-9.1) unstable; urgency=low
 
   * Non-maintainer upload.
