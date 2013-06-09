@@ -1,5 +1,7 @@
+# SymbolsHelper-Confirmed: 1:7.2d amd64 i386 kfreebsd-amd64 kfreebsd-i386 mipsel powerpc
 libgc.so.1 libgc1c2 #MINVER#
  GC_FirstDLOpenedLinkMap@Base 1:7.2d
+ (arch=kfreebsd-amd64 kfreebsd-i386)GC_FreeBSDGetDataStart@Base 1:7.2d
  GC_abort@Base 1:7.2d
  GC_add_ext_descriptor@Base 1:7.2d
  GC_add_map_entry@Base 1:7.2d
@@ -81,7 +83,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_core_malloc@Base 1:7.2d
  GC_core_malloc_atomic@Base 1:7.2d
  GC_current_warn_proc@Base 1:7.2d
- GC_data_start@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386 !mipsel)GC_data_start@Base 1:7.2d
  GC_debug_change_stubborn@Base 1:7.2d
  GC_debug_end_stubborn_change@Base 1:7.2d
  GC_debug_free@Base 1:7.2d
@@ -155,8 +157,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_ext_descriptors@Base 1:7.2d
  GC_extend_size_map@Base 1:7.2d
  GC_fail_count@Base 1:7.2d
- GC_fault_handler@Base 1:7.2d
- GC_fault_handler_lock@Base 1:7.2d
+ (arch=!mipsel)GC_fault_handler@Base 1:7.2d
+ (arch=amd64 i386)GC_fault_handler_lock@Base 1:7.2d
  GC_finalize@Base 1:7.2d
  GC_finalize_all@Base 1:7.2d
  GC_finalize_now@Base 1:7.2d
@@ -164,8 +166,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_finalizer_notifier@Base 1:7.2d
  GC_find_header@Base 1:7.2d
  GC_find_leak@Base 1:7.2d
- GC_find_limit@Base 1:7.2d
- GC_find_limit_with_bound@Base 1:7.2d
+ (arch=!mipsel)GC_find_limit@Base 1:7.2d
+ (arch=!mipsel)GC_find_limit_with_bound@Base 1:7.2d
  GC_findleak_delay_free@Base 1:7.2d
  GC_finish_collection@Base 1:7.2d
  GC_fo_entries@Base 1:7.2d
@@ -178,6 +180,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_free_bytes@Base 1:7.2d
  GC_free_inner@Base 1:7.2d
  GC_free_space_divisor@Base 1:7.2d
+ (arch=kfreebsd-amd64 kfreebsd-i386)GC_freebsd_main_stack_base@Base 1:7.2d
  GC_freehblk@Base 1:7.2d
  GC_full_freq@Base 1:7.2d
  GC_gc_no@Base 1:7.2d
@@ -203,7 +206,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_get_bytes_since_gc@Base 1:7.2d
  GC_get_dont_expand@Base 1:7.2d
  GC_get_dont_precollect@Base 1:7.2d
- GC_get_file_len@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_get_file_len@Base 1:7.2d
  GC_get_finalize_on_demand@Base 1:7.2d
  GC_get_finalizer_notifier@Base 1:7.2d
  GC_get_find_leak@Base 1:7.2d
@@ -217,12 +220,12 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_get_heap_usage_safe@Base 1:7.2d
  GC_get_java_finalization@Base 1:7.2d
  GC_get_main_stack_base@Base 1:7.2d
- GC_get_maps@Base 1:7.2d
- GC_get_maps_len@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_get_maps@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_get_maps_len@Base 1:7.2d
  GC_get_max_retries@Base 1:7.2d
  GC_get_no_dls@Base 1:7.2d
  GC_get_non_gc_bytes@Base 1:7.2d
- GC_get_nprocs@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_get_nprocs@Base 1:7.2d
  GC_get_oom_fn@Base 1:7.2d
  GC_get_pages_executable@Base 1:7.2d
  GC_get_parallel@Base 1:7.2d
@@ -257,7 +260,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_init_explicit_typing@Base 1:7.2d
  GC_init_gcj_malloc@Base 1:7.2d
  GC_init_headers@Base 1:7.2d
- GC_init_linux_data_start@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386 !mipsel)GC_init_linux_data_start@Base 1:7.2d
  GC_init_parallel@Base 1:7.2d
  GC_init_size_map@Base 1:7.2d
  GC_init_thread_local@Base 1:7.2d
@@ -278,12 +281,12 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_is_visible@Base 1:7.2d
  GC_is_visible_print_proc@Base 1:7.2d
  GC_java_finalization@Base 1:7.2d
- GC_jmp_buf@Base 1:7.2d
+ (arch=!mipsel)GC_jmp_buf@Base 1:7.2d
  GC_large_alloc_warn_interval@Base 1:7.2d
  GC_large_alloc_warn_suppressed@Base 1:7.2d
  GC_leaked@Base 1:7.2d
  GC_least_plausible_heap_addr@Base 1:7.2d
- GC_linux_main_stack_base@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_linux_main_stack_base@Base 1:7.2d
  GC_lock@Base 1:7.2d
  GC_lock_holder@Base 1:7.2d
  GC_log@Base 1:7.2d
@@ -354,26 +357,26 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_obj_kinds@Base 1:7.2d
  GC_objects_are_marked@Base 1:7.2d
  GC_objfreelist_ptr@Base 1:7.2d
- GC_old_bus_handler@Base 1:7.2d
- GC_old_bus_handler_used_si@Base 1:7.2d
+ (arch=amd64 i386)GC_old_bus_handler@Base 1:7.2d
+ (arch=amd64 i386)GC_old_bus_handler_used_si@Base 1:7.2d
  GC_old_dl_entries@Base 1:7.2d
  GC_old_normal_bl@Base 1:7.2d
- GC_old_segv_handler@Base 1:7.2d
- GC_old_segv_handler_used_si@Base 1:7.2d
+ (arch=amd64 i386)GC_old_segv_handler@Base 1:7.2d
+ (arch=amd64 i386)GC_old_segv_handler_used_si@Base 1:7.2d
  GC_old_stack_bl@Base 1:7.2d
  GC_oom_fn@Base 1:7.2d
  GC_page_size@Base 1:7.2d
  GC_page_was_dirty@Base 1:7.2d
  GC_pages_executable@Base 1:7.2d
  GC_parallel@Base 1:7.2d
- GC_parse_map_entry@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_parse_map_entry@Base 1:7.2d
  GC_parse_mem_size_arg@Base 1:7.2d
  GC_pause@Base 1:7.2d
  GC_posix_memalign@Base 1:7.2d
  GC_post_incr@Base 1:7.2d
  GC_pre_incr@Base 1:7.2d
  GC_prev_block@Base 1:7.2d
- GC_print_address_map@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_print_address_map@Base 1:7.2d
  GC_print_all_errors@Base 1:7.2d
  GC_print_all_smashed@Base 1:7.2d
  GC_print_all_smashed_proc@Base 1:7.2d
@@ -392,11 +395,11 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_print_type@Base 1:7.2d
  GC_printf@Base 1:7.2d
  GC_promote_black_lists@Base 1:7.2d
- GC_protect_heap@Base 1:7.2d
- GC_pthread_cancel@Base 1:7.2d
+ (arch=amd64 i386)GC_protect_heap@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_pthread_cancel@Base 1:7.2d
  GC_pthread_create@Base 1:7.2d
  GC_pthread_detach@Base 1:7.2d
- GC_pthread_exit@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_pthread_exit@Base 1:7.2d
  GC_pthread_join@Base 1:7.2d
  GC_pthread_sigmask@Base 1:7.2d
  GC_push_all@Base 1:7.2d
@@ -463,8 +466,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_remove_roots@Base 1:7.2d
  GC_remove_roots_inner@Base 1:7.2d
  GC_remove_tmp_roots@Base 1:7.2d
- GC_repeat_read@Base 1:7.2d
- GC_reset_fault_handler@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_repeat_read@Base 1:7.2d
+ (arch=!mipsel)GC_reset_fault_handler@Base 1:7.2d
  GC_reset_finalizer_nested@Base 1:7.2d
  GC_restart_handler@Base 1:7.2d
  GC_retry_signals@Base 1:7.2d
@@ -499,7 +502,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_set_time_limit@Base 1:7.2d
  GC_set_warn_proc@Base 1:7.2d
  GC_setpagesize@Base 1:7.2d
- GC_setup_temporary_fault_handler@Base 1:7.2d
+ (arch=!mipsel)GC_setup_temporary_fault_handler@Base 1:7.2d
  GC_should_collect@Base 1:7.2d
  GC_should_invoke_finalizers@Base 1:7.2d
  GC_signal_mark_stack_overflow@Base 1:7.2d
@@ -559,9 +562,11 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_world_is_stopped@Base 1:7.2d
  GC_world_stopped@Base 1:7.2d
  GC_write@Base 1:7.2d
- GC_write_fault_handler@Base 1:7.2d
+ (arch=amd64 i386)GC_write_fault_handler@Base 1:7.2d
+ (arch=kfreebsd-amd64 kfreebsd-i386)etext@Base 1:7.2d
 libgccpp.so.1 libgc1c2 #MINVER#
  _ZdaPv@Base 1:7.2d
  _ZdlPv@Base 1:7.2d
- _Znam@Base 1:7.2d
- _Znwm@Base 1:7.2d
+ (subst)_Zna{size_t}@Base 1:7.2d
+ (subst)_Znw{size_t}@Base 1:7.2d
+ (arch=kfreebsd-amd64 kfreebsd-i386)etext@Base 1:7.2d
