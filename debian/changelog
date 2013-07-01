@@ -1,3 +1,12 @@
+libgc (1:7.2d-3) unstable; urgency=low
+
+  * Upload to unstable 
+    * 7.2 misses some private symbols which are now properly hidden by
+      libgc and were unused by other software in debian
+  * Generate Symbols file by pkg-kde helper scripts
+
+ -- Christoph Egger <christoph@debian.org>  Mon, 01 Jul 2013 22:48:07 +0200
+
 libgc (1:7.2d-2) experimental; urgency=low
 
   * Improve symbols file using pkg-kde-tools
