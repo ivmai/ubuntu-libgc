@@ -1,4 +1,4 @@
-# SymbolsHelper-Confirmed: 1:7.2d amd64 armhf hurd-i386 i386 ia64 kfreebsd-amd64 kfreebsd-i386 mipsel powerpc s390 s390x sparc
+# SymbolsHelper-Confirmed: 1:7.2d amd64 armel armhf hurd-i386 i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mipsel powerpc s390 s390x sparc
 libgc.so.1 libgc1c2 #MINVER#
  GC_FirstDLOpenedLinkMap@Base 1:7.2d
  (arch=kfreebsd-amd64 kfreebsd-i386)GC_FreeBSDGetDataStart@Base 1:7.2d
@@ -84,7 +84,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_core_malloc@Base 1:7.2d
  GC_core_malloc_atomic@Base 1:7.2d
  GC_current_warn_proc@Base 1:7.2d
- (arch=!kfreebsd-amd64 !kfreebsd-i386 !mipsel !s390 !s390x !sparc)GC_data_start@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386 !mips !mipsel !s390 !s390x !sparc)GC_data_start@Base 1:7.2d
  GC_debug_change_stubborn@Base 1:7.2d
  GC_debug_end_stubborn_change@Base 1:7.2d
  GC_debug_free@Base 1:7.2d
@@ -159,7 +159,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_ext_descriptors@Base 1:7.2d
  GC_extend_size_map@Base 1:7.2d
  GC_fail_count@Base 1:7.2d
- (arch=!mipsel !s390 !s390x)GC_fault_handler@Base 1:7.2d
+ (arch=!mips !mipsel !s390 !s390x)GC_fault_handler@Base 1:7.2d
  (arch=amd64 i386 ia64)GC_fault_handler_lock@Base 1:7.2d
  GC_finalize@Base 1:7.2d
  GC_finalize_all@Base 1:7.2d
@@ -168,8 +168,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_finalizer_notifier@Base 1:7.2d
  GC_find_header@Base 1:7.2d
  GC_find_leak@Base 1:7.2d
- (arch=!mipsel !s390 !s390x)GC_find_limit@Base 1:7.2d
- (arch=!mipsel !s390 !s390x)GC_find_limit_with_bound@Base 1:7.2d
+ (arch=!mips !mipsel !s390 !s390x)GC_find_limit@Base 1:7.2d
+ (arch=!mips !mipsel !s390 !s390x)GC_find_limit_with_bound@Base 1:7.2d
  GC_findleak_delay_free@Base 1:7.2d
  GC_finish_collection@Base 1:7.2d
  GC_fo_entries@Base 1:7.2d
@@ -228,7 +228,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_get_no_dls@Base 1:7.2d
  GC_get_non_gc_bytes@Base 1:7.2d
  (arch=!hurd-i386 !kfreebsd-amd64 !kfreebsd-i386)GC_get_nprocs@Base 1:7.2d
- (arch=armhf)GC_get_nprocs_present@Base 1:7.2d
+ (arch=armel armhf)GC_get_nprocs_present@Base 1:7.2d
  GC_get_oom_fn@Base 1:7.2d
  GC_get_pages_executable@Base 1:7.2d
  GC_get_parallel@Base 1:7.2d
@@ -265,7 +265,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_init_explicit_typing@Base 1:7.2d
  GC_init_gcj_malloc@Base 1:7.2d
  GC_init_headers@Base 1:7.2d
- (arch=!kfreebsd-amd64 !kfreebsd-i386 !mipsel !s390 !s390x !sparc)GC_init_linux_data_start@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386 !mips !mipsel !s390 !s390x !sparc)GC_init_linux_data_start@Base 1:7.2d
  GC_init_parallel@Base 1:7.2d
  GC_init_size_map@Base 1:7.2d
  GC_init_thread_local@Base 1:7.2d
@@ -286,8 +286,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_is_visible@Base 1:7.2d
  GC_is_visible_print_proc@Base 1:7.2d
  GC_java_finalization@Base 1:7.2d
- (arch=!mipsel !s390 !s390x)GC_jmp_buf@Base 1:7.2d
- (arch=armhf hurd-i386)GC_key_create@Base 1:7.2d
+ (arch=!mips !mipsel !s390 !s390x)GC_jmp_buf@Base 1:7.2d
+ (arch=armel armhf hurd-i386)GC_key_create@Base 1:7.2d
  GC_large_alloc_warn_interval@Base 1:7.2d
  GC_large_alloc_warn_suppressed@Base 1:7.2d
  GC_leaked@Base 1:7.2d
@@ -474,10 +474,10 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_remove_root_at_pos@Base 1:7.2d
  GC_remove_roots@Base 1:7.2d
  GC_remove_roots_inner@Base 1:7.2d
- (arch=armhf hurd-i386)GC_remove_specific@Base 1:7.2d
+ (arch=armel armhf hurd-i386)GC_remove_specific@Base 1:7.2d
  GC_remove_tmp_roots@Base 1:7.2d
  (arch=!hurd-i386 !kfreebsd-amd64 !kfreebsd-i386)GC_repeat_read@Base 1:7.2d
- (arch=!mipsel !s390 !s390x)GC_reset_fault_handler@Base 1:7.2d
+ (arch=!mips !mipsel !s390 !s390x)GC_reset_fault_handler@Base 1:7.2d
  GC_reset_finalizer_nested@Base 1:7.2d
  GC_restart_handler@Base 1:7.2d
  GC_retry_signals@Base 1:7.2d
@@ -514,13 +514,13 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_set_time_limit@Base 1:7.2d
  GC_set_warn_proc@Base 1:7.2d
  GC_setpagesize@Base 1:7.2d
- (arch=armhf hurd-i386)GC_setspecific@Base 1:7.2d
- (arch=!mipsel !s390 !s390x)GC_setup_temporary_fault_handler@Base 1:7.2d
+ (arch=armel armhf hurd-i386)GC_setspecific@Base 1:7.2d
+ (arch=!mips !mipsel !s390 !s390x)GC_setup_temporary_fault_handler@Base 1:7.2d
  GC_should_collect@Base 1:7.2d
  GC_should_invoke_finalizers@Base 1:7.2d
  GC_signal_mark_stack_overflow@Base 1:7.2d
  GC_size@Base 1:7.2d
- (arch=armhf hurd-i386)GC_slow_getspecific@Base 1:7.2d
+ (arch=armel armhf hurd-i386)GC_slow_getspecific@Base 1:7.2d
  GC_smashed@Base 1:7.2d
  GC_split_block@Base 1:7.2d
  GC_stackbottom@Base 1:7.2d
