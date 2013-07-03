@@ -1,3 +1,10 @@
+libgc (1:7.2d-5) unstable; urgency=low
+
+  * Add Replaces: libgc1c3 for Ubuntu
+  * Import symbol diffs from debian-ports
+
+ -- Christoph Egger <christoph@debian.org>  Wed, 03 Jul 2013 22:14:42 +0200
+
 libgc (1:7.2d-4) unstable; urgency=low
 
   * Import refined symbols for arm and mips

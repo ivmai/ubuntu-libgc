@@ -17,7 +17,7 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Conflicts: libgc1
-Replaces: libgc1
+Replaces: libgc1, libgc1c3
 Multi-Arch: same
 Description: conservative garbage collector for C and C++
  Boehm-Demers-Weiser's GC is a garbage collecting storage allocator that is

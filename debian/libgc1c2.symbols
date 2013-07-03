@@ -1,8 +1,8 @@
-# SymbolsHelper-Confirmed: 1:7.2d amd64 armel armhf hurd-i386 i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mipsel powerpc s390 s390x sparc
+# SymbolsHelper-Confirmed: 1:7.2d alpha amd64 armel armhf hurd-i386 i386 ia64 kfreebsd-amd64 kfreebsd-i386 m68k mips mipsel powerpc s390 s390x sparc sparc64 x32
 libgc.so.1 libgc1c2 #MINVER#
  GC_FirstDLOpenedLinkMap@Base 1:7.2d
  (arch=kfreebsd-amd64 kfreebsd-i386)GC_FreeBSDGetDataStart@Base 1:7.2d
- (arch=sparc)GC_SysVGetDataStart@Base 1:7.2d
+ (arch=sparc sparc64)GC_SysVGetDataStart@Base 1:7.2d
  GC_abort@Base 1:7.2d
  GC_add_ext_descriptor@Base 1:7.2d
  GC_add_map_entry@Base 1:7.2d
@@ -84,7 +84,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_core_malloc@Base 1:7.2d
  GC_core_malloc_atomic@Base 1:7.2d
  GC_current_warn_proc@Base 1:7.2d
- (arch=!kfreebsd-amd64 !kfreebsd-i386 !mips !mipsel !s390 !s390x !sparc)GC_data_start@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386 !mips !mipsel !s390 !s390x !sparc !sparc64)GC_data_start@Base 1:7.2d
  GC_debug_change_stubborn@Base 1:7.2d
  GC_debug_end_stubborn_change@Base 1:7.2d
  GC_debug_free@Base 1:7.2d
@@ -160,7 +160,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_extend_size_map@Base 1:7.2d
  GC_fail_count@Base 1:7.2d
  (arch=!mips !mipsel !s390 !s390x)GC_fault_handler@Base 1:7.2d
- (arch=amd64 i386 ia64)GC_fault_handler_lock@Base 1:7.2d
+ (arch=alpha amd64 i386 ia64 m68k x32)GC_fault_handler_lock@Base 1:7.2d
  GC_finalize@Base 1:7.2d
  GC_finalize_all@Base 1:7.2d
  GC_finalize_now@Base 1:7.2d
@@ -265,7 +265,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_init_explicit_typing@Base 1:7.2d
  GC_init_gcj_malloc@Base 1:7.2d
  GC_init_headers@Base 1:7.2d
- (arch=!kfreebsd-amd64 !kfreebsd-i386 !mips !mipsel !s390 !s390x !sparc)GC_init_linux_data_start@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386 !mips !mipsel !s390 !s390x !sparc !sparc64)GC_init_linux_data_start@Base 1:7.2d
  GC_init_parallel@Base 1:7.2d
  GC_init_size_map@Base 1:7.2d
  GC_init_thread_local@Base 1:7.2d
@@ -363,12 +363,12 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_obj_kinds@Base 1:7.2d
  GC_objects_are_marked@Base 1:7.2d
  GC_objfreelist_ptr@Base 1:7.2d
- (arch=amd64 i386 ia64)GC_old_bus_handler@Base 1:7.2d
- (arch=amd64 i386 ia64)GC_old_bus_handler_used_si@Base 1:7.2d
+ (arch=alpha amd64 i386 ia64 m68k x32)GC_old_bus_handler@Base 1:7.2d
+ (arch=alpha amd64 i386 ia64 m68k x32)GC_old_bus_handler_used_si@Base 1:7.2d
  GC_old_dl_entries@Base 1:7.2d
  GC_old_normal_bl@Base 1:7.2d
- (arch=amd64 i386 ia64)GC_old_segv_handler@Base 1:7.2d
- (arch=amd64 i386 ia64)GC_old_segv_handler_used_si@Base 1:7.2d
+ (arch=alpha amd64 i386 ia64 m68k x32)GC_old_segv_handler@Base 1:7.2d
+ (arch=alpha amd64 i386 ia64 m68k x32)GC_old_segv_handler_used_si@Base 1:7.2d
  GC_old_stack_bl@Base 1:7.2d
  GC_oom_fn@Base 1:7.2d
  GC_page_size@Base 1:7.2d
@@ -402,7 +402,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_print_type@Base 1:7.2d
  GC_printf@Base 1:7.2d
  GC_promote_black_lists@Base 1:7.2d
- (arch=amd64 i386 ia64)GC_protect_heap@Base 1:7.2d
+ (arch=alpha amd64 i386 ia64 m68k x32)GC_protect_heap@Base 1:7.2d
  (arch=!hurd-i386 !kfreebsd-amd64 !kfreebsd-i386)GC_pthread_cancel@Base 1:7.2d
  GC_pthread_create@Base 1:7.2d
  GC_pthread_detach@Base 1:7.2d
@@ -422,8 +422,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_push_finalizer_structures@Base 1:7.2d
  GC_push_gc_structures@Base 1:7.2d
  GC_push_marked1@Base 1:7.2d
- GC_push_marked2@Base 1:7.2d
- GC_push_marked4@Base 1:7.2d
+ (arch=!m68k)GC_push_marked2@Base 1:7.2d
+ (arch=!m68k)GC_push_marked4@Base 1:7.2d
  GC_push_marked@Base 1:7.2d
  GC_push_next_marked@Base 1:7.2d
  GC_push_next_marked_dirty@Base 1:7.2d
@@ -485,8 +485,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_roots_present@Base 1:7.2d
  GC_same_obj@Base 1:7.2d
  GC_same_obj_print_proc@Base 1:7.2d
- (arch=ia64 sparc)GC_save_regs_in_stack@Base 1:7.2d
- (arch=ia64 sparc)GC_save_regs_ret_val@Base 1:7.2d
+ (arch=ia64 sparc sparc64)GC_save_regs_in_stack@Base 1:7.2d
+ (arch=ia64 sparc sparc64)GC_save_regs_ret_val@Base 1:7.2d
  GC_scratch_alloc@Base 1:7.2d
  GC_set_all_interior_pointers@Base 1:7.2d
  GC_set_and_save_fault_handler@Base 1:7.2d
@@ -576,13 +576,13 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_world_is_stopped@Base 1:7.2d
  GC_world_stopped@Base 1:7.2d
  GC_write@Base 1:7.2d
- (arch=amd64 i386 ia64)GC_write_fault_handler@Base 1:7.2d
- (arch=sparc)_etext@Base 1:7.2d
+ (arch=alpha amd64 i386 ia64 m68k x32)GC_write_fault_handler@Base 1:7.2d
+ (arch=sparc sparc64)_etext@Base 1:7.2d
  (arch=kfreebsd-amd64 kfreebsd-i386)etext@Base 1:7.2d
 libgccpp.so.1 libgc1c2 #MINVER#
  _ZdaPv@Base 1:7.2d
  _ZdlPv@Base 1:7.2d
  (subst)_Zna{size_t}@Base 1:7.2d
  (subst)_Znw{size_t}@Base 1:7.2d
- (arch=sparc)_etext@Base 1:7.2d
+ (arch=sparc sparc64)_etext@Base 1:7.2d
  (arch=kfreebsd-amd64 kfreebsd-i386)etext@Base 1:7.2d
