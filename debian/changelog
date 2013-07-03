@@ -1,3 +1,9 @@
+libgc (1:7.2d-4ubuntu1) saucy; urgency=low
+
+  * libgc1c2: Replaces libgc1c3.
+
+ -- Matthias Klose <doko@ubuntu.com>  Wed, 03 Jul 2013 18:13:30 +0200
+
 libgc (1:7.2d-4) unstable; urgency=low
 
   * Import refined symbols for arm and mips
