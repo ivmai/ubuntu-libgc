@@ -5,3 +5,4 @@
 #05-s390-includes.diff
 enable-threads.diff
 allow-automake-1.13
+aarch64.diff

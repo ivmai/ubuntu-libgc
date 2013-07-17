@@ -7,12 +7,19 @@ DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 LDFLAGS += -pthread
 
+ifeq ($(DEB_HOST_MULTIARCH),aarch64-linux-gnu)
+  dh_args = autoreconf
+else
+  dh_args = autoreconf,pkgkde_symbolshelper
+endif
+
 %:
-	dh $@ --with pkgkde_symbolshelper
+	dh $@ --with $(dh_args)
 
 override_dh_auto_configure:
 	[ ! -d libatomic_ops-1.2 ] || mv libatomic_ops-1.2 libatomic_ops-1.2.bak
 	autoconf
+	EXTRA_TEST_LIBS="-lpthread" \
 	./configure \
 		$(CONFIG_OPTS) \
 		--enable-cplusplus \
@@ -26,9 +33,6 @@ override_dh_auto_configure:
 		--host=$(DEB_HOST_GNU_TYPE) \
 		--build=$(DEB_BUILD_GNU_TYPE) \
 		--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
-
-#override_dh_autoreconf:
-#	dh_autoreconf ./autogen.sh
 
 override_dh_auto_test:
 	$(MAKE) check

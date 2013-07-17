@@ -4,9 +4,10 @@ Section: libs
 Priority: standard
 Build-Depends: debhelper (>= 9),
  autoconf,
+ dh-autoreconf,
  libatomic-ops-dev (>= 7.3~),
  pkg-config,
- pkg-kde-tools
+ pkg-kde-tools [!arm64]
 Standards-Version: 3.9.4
 Homepage: http://www.hpl.hp.com/personal/Hans_Boehm/gc/
 Vcs-Git: git://git.debian.org/git/collab-maint/libgc.git

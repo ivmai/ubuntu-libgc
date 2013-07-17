@@ -1,3 +1,13 @@
+libgc (1:7.2d-5ubuntu1) saucy; urgency=low
+
+  * Backport Aarch64 changes.
+  * Build-depend on dh-autoreconf, use autoreconf.
+  * Don't build-depend on pkg-kde-tools on arm64, not yet built.
+  * Update symbols file for arm64.
+  * Link the tests with -lpthread.
+
+ -- Matthias Klose <doko@ubuntu.com>  Wed, 17 Jul 2013 12:39:59 +0200
+
 libgc (1:7.2d-5) unstable; urgency=low
 
   * Add Replaces: libgc1c3 for Ubuntu
