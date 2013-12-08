@@ -35,7 +35,9 @@ override_dh_auto_configure:
 		--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
 
 override_dh_auto_test:
+ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
 	$(MAKE) check
+endif
 
 override_dh_install:
 	install -D doc/gc.man debian/tmp/usr/share/man/man3/gc_malloc.3
