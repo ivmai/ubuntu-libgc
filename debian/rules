@@ -27,8 +27,8 @@ override_dh_auto_configure:
 		--build=$(DEB_BUILD_GNU_TYPE) \
 		--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
 
-#override_dh_autoreconf:
-#	dh_autoreconf ./autogen.sh
+override_dh_autoreconf:
+	dh_autoreconf ./autogen.sh
 
 override_dh_auto_test:
 	$(MAKE) check

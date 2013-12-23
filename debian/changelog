@@ -1,3 +1,10 @@
+libgc (1:7.2d-6) unstable; urgency=medium
+
+  * Run full autoreconf during build
+     (Closes: #732349)
+
+ -- Christoph Egger <christoph@debian.org>  Mon, 23 Dec 2013 12:29:01 +0100
+
 libgc (1:7.2d-5) unstable; urgency=low
 
   * Add Replaces: libgc1c3 for Ubuntu
