@@ -8,11 +8,12 @@ DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 LDFLAGS += -pthread
 
 %:
-	dh $@ --with pkgkde_symbolshelper
+	dh $@ --with autotools-dev,autoreconf,pkgkde_symbolshelper
 
 override_dh_auto_configure:
 	[ ! -d libatomic_ops-1.2 ] || mv libatomic_ops-1.2 libatomic_ops-1.2.bak
 	autoconf
+	EXTRA_TEST_LIBS="-lpthread" \
 	./configure \
 		$(CONFIG_OPTS) \
 		--enable-cplusplus \
@@ -27,11 +28,10 @@ override_dh_auto_configure:
 		--build=$(DEB_BUILD_GNU_TYPE) \
 		--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
 
-override_dh_autoreconf:
-	dh_autoreconf ./autogen.sh
-
 override_dh_auto_test:
+ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
 	$(MAKE) check
+endif
 
 override_dh_install:
 	install -D doc/gc.man debian/tmp/usr/share/man/man3/gc_malloc.3

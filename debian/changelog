@@ -1,3 +1,11 @@
+libgc (1:7.2d-6.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Use dh-autoreconf in build to support new architectures (Closes: #732349)
+  * Add aarch64/arm64 support: gcconfig.h and symbols file 
+
+ -- Wookey <wookey@debian.org>  Thu, 3 Jul 2014 01:25:03 +0000
+
 libgc (1:7.2d-6) unstable; urgency=medium
 
   * Run full autoreconf during build
