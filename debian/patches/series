@@ -6,3 +6,4 @@
 enable-threads.diff
 allow-automake-1.13
 arm64.diff
+or1k-port.diff

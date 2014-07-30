@@ -1,3 +1,11 @@
+libgc (1:7.2d-6.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Add OpenRISC/or1k support: gcconfig.h (or1k-port.diff) and symbols
+    file (Closes: #756538)
+
+ -- Manuel A. Fernandez Montecelo <mafm@debian.org>  Wed, 30 Jul 2014 20:26:41 +0100
+
 libgc (1:7.2d-6.1) unstable; urgency=low
 
   * Non-maintainer upload.
