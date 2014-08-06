@@ -1,6 +1,6 @@
 --- a/include/private/gcconfig.h
 +++ b/include/private/gcconfig.h
-@@ -148,6 +148,10 @@
+@@ -155,6 +155,10 @@
  #    endif
  #    define mach_type_known
  # endif
@@ -11,7 +11,7 @@
  # if defined(DGUX) && (defined(i386) || defined(__i386__))
  #    define I386
  #    ifndef _USING_DGUX
-@@ -1584,6 +1588,24 @@
+@@ -1596,6 +1600,24 @@
  #   endif
  # endif
  
@@ -36,3 +36,13 @@
  # ifdef HP_PA
  #   define MACH_TYPE "HP_PA"
  #   ifdef __LP64__
+@@ -2537,7 +2559,8 @@
+ 
+ #if ((defined(UNIX_LIKE) && (defined(DARWIN) || defined(HURD) \
+                              || defined(OPENBSD) || defined(ARM32) \
+-                             || defined(MIPS) || defined(AVR32))) \
++                             || defined(MIPS) || defined(AVR32) \
++                             || defined(OR1K))) \
+      || (defined(LINUX) && (defined(SPARC) || defined(M68K))) \
+      || (defined(RTEMS) && defined(I386))) && !defined(NO_GETCONTEXT)
+ # define NO_GETCONTEXT
