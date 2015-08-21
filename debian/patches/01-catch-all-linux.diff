@@ -3,21 +3,21 @@ Catch all linux variants.
 
  -- Chris Lamb <lamby@debian.org>  Wed, 12 Aug 2009 01:14:45 +0100
 
-Index: b/configure.ac
+Index: libgc/configure.ac
 ===================================================================
---- a/configure.ac
-+++ b/configure.ac
-@@ -122,8 +122,7 @@
+--- libgc.orig/configure.ac
++++ libgc/configure.ac
+@@ -176,8 +176,7 @@ case "$THREADS" in
      THREADS=posix
      AC_CHECK_LIB(pthread, pthread_self, THREADDLLIBS="-lpthread",,)
      case "$host" in
 -     x86-*-linux* | ia64-*-linux* | i586-*-linux* | i686-*-linux* \
--     | x86_64-*-linux* | alpha-*-linux* | sparc*-*-linux*)
+-     | x86_64-*-linux* | alpha-*-linux* | powerpc*-*-linux* | sparc*-*-linux*)
 +     *-*-linux*)
          AC_DEFINE(GC_LINUX_THREADS)
          AC_DEFINE(_REENTRANT)
-         if test "${enable_parallel_mark}" = yes; then
-@@ -132,10 +131,6 @@
+         if test "${enable_parallel_mark}" != no; then
+@@ -186,10 +185,6 @@ case "$THREADS" in
          AC_DEFINE(THREAD_LOCAL_ALLOC)
          AC_MSG_WARN("Explicit GC_INIT() calls may be required.");
          ;;

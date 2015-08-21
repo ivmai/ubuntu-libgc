@@ -4,4 +4,3 @@
 04-fix-sparc-ftbfs.diff
 #05-s390-includes.diff
 enable-threads.diff
-allow-automake-1.13
