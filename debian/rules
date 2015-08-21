@@ -32,6 +32,7 @@ override_dh_auto_test:
 override_dh_install:
 	install -D doc/gc.man debian/tmp/usr/share/man/man3/gc_malloc.3
 	dh_install
+	rm debian/libgc-dev/usr/share/doc/libgc1c2/README.environment
 
 override_dh_auto_clean:
 	[ -d libatomic_ops-1.2 ] || [ ! -d libatomic_ops-1.2.bak ] || mv libatomic_ops-1.2.bak libatomic_ops-1.2

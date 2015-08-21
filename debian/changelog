@@ -1,3 +1,13 @@
+libgc (1:7.4.2-2) experimental; urgency=medium
+
+  * update standards version
+  * Update symbols files
+  * add Debian GCC Maintainers as uploades (as discussed with Matthias
+  * use canonical VCS urls
+  * Switch to dh-autoreconf
+
+ -- Christoph Egger <christoph@debian.org>  Fri, 21 Aug 2015 13:42:23 +0200
+
 libgc (1:7.4.2-1) experimental; urgency=medium
 
   * New upstream version
