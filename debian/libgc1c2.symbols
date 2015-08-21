@@ -1,9 +1,16 @@
-# SymbolsHelper-Confirmed: 1:7.2d alpha amd64 armel armhf hurd-i386 i386 ia64 kfreebsd-amd64 kfreebsd-i386 m68k mips mipsel powerpc s390 s390x sparc sparc64 x32
+# SymbolsHelper-Confirmed: 1:7.4.2 amd64 armel armhf i386 kfreebsd-amd64 kfreebsd-i386 powerpc s390x
 libgc.so.1 libgc1c2 #MINVER#
+ (arch=armel)AO_compare_double_and_swap_double_emulation@Base 1:7.4.2
+ (arch=armel)AO_fetch_compare_and_swap_emulation@Base 1:7.4.2
+ (arch=armel)AO_locks@Base 1:7.4.2
+ (arch=armel)AO_pause@Base 1:7.4.2
+ (arch=armel)AO_pt_lock@Base 1:7.4.2
+ (arch=armel)AO_store_full_emulation@Base 1:7.4.2
  GC_FirstDLOpenedLinkMap@Base 1:7.2d
  (arch=kfreebsd-amd64 kfreebsd-i386)GC_FreeBSDGetDataStart@Base 1:7.2d
  (arch=sparc sparc64)GC_SysVGetDataStart@Base 1:7.2d
- GC_abort@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_acquire_mark_lock@Base 1:7.4.2
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_active_count@Base 1:7.4.2
  GC_add_ext_descriptor@Base 1:7.2d
  GC_add_map_entry@Base 1:7.2d
  GC_add_roots@Base 1:7.2d
@@ -33,6 +40,9 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_array_mark_proc@Base 1:7.2d
  GC_array_mark_proc_index@Base 1:7.2d
  GC_arrays@Base 1:7.2d
+ GC_atfork_child@Base 1:7.4.2
+ GC_atfork_parent@Base 1:7.4.2
+ GC_atfork_prepare@Base 1:7.4.2
  GC_auobjfreelist_ptr@Base 1:7.2d
  GC_avail_descr@Base 1:7.2d
  GC_base@Base 1:7.2d
@@ -48,6 +58,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_build_fl@Base 1:7.2d
  GC_build_fl_clear2@Base 1:7.2d
  GC_build_fl_clear4@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_bytes_allocd_tmp@Base 1:7.4.2
  GC_bytes_found@Base 1:7.2d
  GC_call_with_alloc_lock@Base 1:7.2d
  GC_call_with_gc_active@Base 1:7.2d
@@ -76,10 +87,13 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_collect_or_expand@Base 1:7.2d
  GC_collecting@Base 1:7.2d
  GC_collection_in_progress@Base 1:7.2d
+ GC_compute_large_free_bytes@Base 1:7.4.2
+ GC_compute_root_size@Base 1:7.4.2
  GC_cond_register_dynamic_libraries@Base 1:7.2d
  GC_continue_reclaim@Base 1:7.2d
  GC_copy_bl@Base 1:7.2d
  GC_copyright@Base 1:7.2d
+ GC_core_finalized_malloc@Base 1:7.4.2
  GC_core_gcj_malloc@Base 1:7.2d
  GC_core_malloc@Base 1:7.2d
  GC_core_malloc_atomic@Base 1:7.2d
@@ -112,6 +126,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_debugging_started@Base 1:7.2d
  GC_default_is_valid_displacement_print_proc@Base 1:7.2d
  GC_default_is_visible_print_proc@Base 1:7.2d
+ GC_default_on_abort@Base 1:7.4.2
  GC_default_oom_fn@Base 1:7.2d
  GC_default_print_heap_obj_proc@Base 1:7.2d
  GC_default_push_other_roots@Base 1:7.2d
@@ -127,16 +142,21 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_dirty_init@Base 1:7.2d
  GC_dirty_maintained@Base 1:7.2d
  GC_disable@Base 1:7.2d
- GC_dl_entries@Base 1:7.2d
+ GC_disclaim_and_reclaim@Base 1:7.4.2
+ GC_disclaim_and_reclaim_or_free_small_block@Base 1:7.4.2
+ GC_dl_hashtbl@Base 1:7.4.2
  GC_dlopen@Base 1:7.2d
  GC_do_blocking@Base 1:7.2d
  GC_do_blocking_inner@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_do_local_mark@Base 1:7.4.2
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_do_parallel_mark@Base 1:7.4.2
  GC_dont_expand@Base 1:7.2d
  GC_dont_gc@Base 1:7.2d
  GC_dont_precollect@Base 1:7.2d
  GC_double_descr@Base 1:7.2d
  GC_dump@Base 1:7.2d
  GC_dump_finalization@Base 1:7.2d
+ GC_dump_finalization_links@Base 1:7.4.2
  GC_dump_regions@Base 1:7.2d
  GC_dump_regularly@Base 1:7.2d
  GC_ed_size@Base 1:7.2d
@@ -165,6 +185,10 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_finalize_all@Base 1:7.2d
  GC_finalize_now@Base 1:7.2d
  GC_finalize_on_demand@Base 1:7.2d
+ GC_finalized_disclaim@Base 1:7.4.2
+ GC_finalized_kind@Base 1:7.4.2
+ GC_finalized_malloc@Base 1:7.4.2
+ GC_finalized_objfreelist@Base 1:7.4.2
  GC_finalizer_notifier@Base 1:7.2d
  GC_find_header@Base 1:7.2d
  GC_find_leak@Base 1:7.2d
@@ -172,11 +196,11 @@ libgc.so.1 libgc1c2 #MINVER#
  (arch=!mips !mipsel !s390 !s390x)GC_find_limit_with_bound@Base 1:7.2d
  GC_findleak_delay_free@Base 1:7.2d
  GC_finish_collection@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_first_nonempty@Base 1:7.4.2
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_fl_builder_count@Base 1:7.4.2
  GC_fo_entries@Base 1:7.2d
+ GC_fo_head@Base 1:7.4.2
  GC_force_unmap_on_gcollect@Base 1:7.2d
- (arch=!hurd-i386)GC_fork_child_proc@Base 1:7.2d
- (arch=!hurd-i386)GC_fork_parent_proc@Base 1:7.2d
- (arch=!hurd-i386)GC_fork_prepare_proc@Base 1:7.2d
  GC_free@Base 1:7.2d
  GC_free_block_ending_at@Base 1:7.2d
  GC_free_bytes@Base 1:7.2d
@@ -204,6 +228,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_generic_malloc_inner_ignore_off_page@Base 1:7.2d
  GC_generic_malloc_many@Base 1:7.2d
  GC_generic_or_special_malloc@Base 1:7.2d
+ GC_get_abort_func@Base 1:7.4.2
  GC_get_all_interior_pointers@Base 1:7.2d
  GC_get_bytes_since_gc@Base 1:7.2d
  GC_get_dont_expand@Base 1:7.2d
@@ -227,16 +252,21 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_get_max_retries@Base 1:7.2d
  GC_get_no_dls@Base 1:7.2d
  GC_get_non_gc_bytes@Base 1:7.2d
- (arch=!hurd-i386 !kfreebsd-amd64 !kfreebsd-i386)GC_get_nprocs@Base 1:7.2d
+ GC_get_nprocs@Base 1:7.4.2
  (arch=armel armhf)GC_get_nprocs_present@Base 1:7.2d
+ GC_get_on_heap_resize@Base 1:7.4.2
  GC_get_oom_fn@Base 1:7.2d
  GC_get_pages_executable@Base 1:7.2d
  GC_get_parallel@Base 1:7.2d
+ GC_get_prof_stats@Base 1:7.4.2
+ GC_get_prof_stats_unsafe@Base 1:7.4.2
+ GC_get_push_other_roots@Base 1:7.4.2
  (arch=ia64)GC_get_register_stack_base@Base 1:7.2d
  GC_get_stack_base@Base 1:7.2d
  GC_get_start_callback@Base 1:7.2d
  GC_get_stop_func@Base 1:7.2d
  GC_get_suspend_signal@Base 1:7.2d
+ GC_get_thr_restart_signal@Base 1:7.4.2
  GC_get_time_limit@Base 1:7.2d
  GC_get_total_bytes@Base 1:7.2d
  GC_get_unmapped_bytes@Base 1:7.2d
@@ -252,6 +282,9 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_hblk_fl_from_blocks@Base 1:7.2d
  GC_hblkfreelist@Base 1:7.2d
  GC_header_cache_miss@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_help_marker@Base 1:7.4.2
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_help_wanted@Base 1:7.4.2
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_helper_count@Base 1:7.4.2
  GC_ignore_self_finalize_mark_proc@Base 1:7.2d
  GC_ignore_warn_proc@Base 1:7.2d
  GC_in_thread_creation@Base 1:7.2d
@@ -263,6 +296,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_incremental_protection_needs@Base 1:7.2d
  GC_init@Base 1:7.2d
  GC_init_explicit_typing@Base 1:7.2d
+ GC_init_finalized_malloc@Base 1:7.4.2
  GC_init_gcj_malloc@Base 1:7.2d
  GC_init_headers@Base 1:7.2d
  (arch=!kfreebsd-amd64 !kfreebsd-i386 !mips !mipsel !s390 !s390x !sparc !sparc64)GC_init_linux_data_start@Base 1:7.2d
@@ -279,6 +313,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_is_black_listed@Base 1:7.2d
  GC_is_disabled@Base 1:7.2d
  GC_is_full_gc@Base 1:7.2d
+ GC_is_heap_ptr@Base 1:7.4.2
  GC_is_initialized@Base 1:7.2d
  GC_is_marked@Base 1:7.2d
  GC_is_valid_displacement@Base 1:7.2d
@@ -287,14 +322,13 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_is_visible_print_proc@Base 1:7.2d
  GC_java_finalization@Base 1:7.2d
  (arch=!mips !mipsel !s390 !s390x)GC_jmp_buf@Base 1:7.2d
- (arch=armel armhf hurd-i386)GC_key_create@Base 1:7.2d
  GC_large_alloc_warn_interval@Base 1:7.2d
  GC_large_alloc_warn_suppressed@Base 1:7.2d
  GC_leaked@Base 1:7.2d
  GC_least_plausible_heap_addr@Base 1:7.2d
  (arch=!hurd-i386 !kfreebsd-amd64 !kfreebsd-i386)GC_linux_main_stack_base@Base 1:7.2d
+ GC_ll_hashtbl@Base 1:7.4.2
  GC_lock@Base 1:7.2d
- GC_lock_holder@Base 1:7.2d
  GC_log@Base 1:7.2d
  GC_log_printf@Base 1:7.2d
  GC_lookup_thread@Base 1:7.2d
@@ -316,19 +350,23 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_mark_and_push_stack@Base 1:7.2d
  GC_mark_from@Base 1:7.2d
  GC_mark_init@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_mark_local@Base 1:7.4.2
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_mark_no@Base 1:7.4.2
  GC_mark_some@Base 1:7.2d
- GC_mark_stack@Base 1:7.2d
- GC_mark_stack_empty@Base 1:7.2d
- GC_mark_stack_limit@Base 1:7.2d
  GC_mark_stack_size@Base 1:7.2d
  GC_mark_stack_too_small@Base 1:7.2d
- GC_mark_stack_top@Base 1:7.2d
  GC_mark_state@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_mark_thread@Base 1:7.4.2
  GC_mark_thread_local_fls_for@Base 1:7.2d
  GC_mark_thread_local_free_lists@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_mark_threads@Base 1:7.4.2
+ GC_max_heapsize@Base 1:7.4.2
  GC_max_retries@Base 1:7.2d
  GC_maybe_gc@Base 1:7.2d
  GC_memalign@Base 1:7.2d
+ GC_move_disappearing_link@Base 1:7.4.2
+ GC_move_disappearing_link_inner@Base 1:7.4.2
+ GC_move_long_link@Base 1:7.4.2
  GC_n_attempts@Base 1:7.2d
  GC_n_heap_sects@Base 1:7.2d
  GC_n_kinds@Base 1:7.2d
@@ -352,10 +390,13 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_next_used_block@Base 1:7.2d
  GC_no_dls@Base 1:7.2d
  GC_non_gc_bytes@Base 1:7.2d
+ GC_non_gc_bytes_at_gc@Base 1:7.4.2
  GC_noop1@Base 1:7.2d
- GC_noop@Base 1:7.2d
+ GC_noop6@Base 1:7.4.2
  GC_noop_sink@Base 1:7.2d
  GC_normal_finalize_mark_proc@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_notify_all_builder@Base 1:7.4.2
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_notify_all_marker@Base 1:7.4.2
  GC_notify_or_invoke_finalizers@Base 1:7.2d
  GC_nprocs@Base 1:7.2d
  GC_null_finalize_mark_proc@Base 1:7.2d
@@ -364,18 +405,19 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_objects_are_marked@Base 1:7.2d
  GC_objfreelist_ptr@Base 1:7.2d
  (arch=alpha amd64 i386 ia64 m68k x32)GC_old_bus_handler@Base 1:7.2d
- (arch=alpha amd64 i386 ia64 m68k x32)GC_old_bus_handler_used_si@Base 1:7.2d
  GC_old_dl_entries@Base 1:7.2d
+ GC_old_ll_entries@Base 1:7.4.2
  GC_old_normal_bl@Base 1:7.2d
  (arch=alpha amd64 i386 ia64 m68k x32)GC_old_segv_handler@Base 1:7.2d
  (arch=alpha amd64 i386 ia64 m68k x32)GC_old_segv_handler_used_si@Base 1:7.2d
  GC_old_stack_bl@Base 1:7.2d
+ GC_on_abort@Base 1:7.4.2
+ GC_on_heap_resize@Base 1:7.4.2
  GC_oom_fn@Base 1:7.2d
  GC_page_size@Base 1:7.2d
  GC_page_was_dirty@Base 1:7.2d
  GC_pages_executable@Base 1:7.2d
  GC_parallel@Base 1:7.2d
- (arch=!hurd-i386 !kfreebsd-amd64 !kfreebsd-i386)GC_parse_map_entry@Base 1:7.2d
  GC_parse_mem_size_arg@Base 1:7.2d
  GC_pause@Base 1:7.2d
  GC_posix_memalign@Base 1:7.2d
@@ -399,7 +441,6 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_print_smashed_obj@Base 1:7.2d
  GC_print_static_roots@Base 1:7.2d
  GC_print_stats@Base 1:7.2d
- GC_print_type@Base 1:7.2d
  GC_printf@Base 1:7.2d
  GC_promote_black_lists@Base 1:7.2d
  (arch=alpha amd64 i386 ia64 m68k x32)GC_protect_heap@Base 1:7.2d
@@ -421,9 +462,9 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_push_current_stack@Base 1:7.2d
  GC_push_finalizer_structures@Base 1:7.2d
  GC_push_gc_structures@Base 1:7.2d
- GC_push_marked1@Base 1:7.2d
- (arch=!m68k)GC_push_marked2@Base 1:7.2d
- (arch=!m68k)GC_push_marked4@Base 1:7.2d
+ (arch=kfreebsd-amd64 kfreebsd-i386)GC_push_marked1@Base 1:7.4.2
+ (arch=!amd64 !armel !armhf !i386 !m68k !powerpc !s390x)GC_push_marked2@Base 1:7.2d
+ (arch=!amd64 !armel !armhf !i386 !m68k !powerpc !s390x)GC_push_marked4@Base 1:7.2d
  GC_push_marked@Base 1:7.2d
  GC_push_next_marked@Base 1:7.2d
  GC_push_next_marked_dirty@Base 1:7.2d
@@ -436,6 +477,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_push_thread_structures@Base 1:7.2d
  GC_push_typed_structures@Base 1:7.2d
  GC_push_typed_structures_proc@Base 1:7.2d
+ GC_push_unconditionally@Base 1:7.4.2
  GC_quiet@Base 1:7.2d
  GC_read_dirty@Base 1:7.2d
  GC_realloc@Base 1:7.2d
@@ -446,10 +488,14 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_reclaim_clear@Base 1:7.2d
  GC_reclaim_generic@Base 1:7.2d
  GC_reclaim_small_nonempty_block@Base 1:7.2d
+ GC_reclaim_unconditionally_marked@Base 1:7.4.2
  GC_reclaim_uninit@Base 1:7.2d
+ GC_reclaimed_bytes_before_gc@Base 1:7.4.2
  GC_register_data_segments@Base 1:7.2d
  GC_register_describe_type_fn@Base 1:7.2d
  GC_register_disappearing_link@Base 1:7.2d
+ GC_register_disappearing_link_inner@Base 1:7.4.2
+ GC_register_disclaim_proc@Base 1:7.4.2
  GC_register_displacement@Base 1:7.2d
  GC_register_displacement_inner@Base 1:7.2d
  GC_register_dynamic_libraries@Base 1:7.2d
@@ -461,26 +507,28 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_register_finalizer_no_order@Base 1:7.2d
  GC_register_finalizer_unreachable@Base 1:7.2d
  GC_register_has_static_roots_callback@Base 1:7.2d
+ GC_register_long_link@Base 1:7.4.2
  GC_register_main_static_data@Base 1:7.2d
  GC_register_my_thread@Base 1:7.2d
  GC_register_my_thread_inner@Base 1:7.2d
  (arch=ia64)GC_register_stackbottom@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_release_mark_lock@Base 1:7.4.2
  (arch=!hurd-i386)GC_remove_all_threads_but_me@Base 1:7.2d
  GC_remove_allowed_signals@Base 1:7.2d
  GC_remove_counts@Base 1:7.2d
- GC_remove_from_fl@Base 1:7.2d
+ GC_remove_from_fl_at@Base 1:7.4.2
  GC_remove_header@Base 1:7.2d
  GC_remove_protection@Base 1:7.2d
  GC_remove_root_at_pos@Base 1:7.2d
  GC_remove_roots@Base 1:7.2d
  GC_remove_roots_inner@Base 1:7.2d
- (arch=armel armhf hurd-i386)GC_remove_specific@Base 1:7.2d
  GC_remove_tmp_roots@Base 1:7.2d
  (arch=!hurd-i386 !kfreebsd-amd64 !kfreebsd-i386)GC_repeat_read@Base 1:7.2d
  (arch=!mips !mipsel !s390 !s390x)GC_reset_fault_handler@Base 1:7.2d
  GC_reset_finalizer_nested@Base 1:7.2d
  GC_restart_handler@Base 1:7.2d
  GC_retry_signals@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_return_mark_stack@Base 1:7.4.2
  GC_root_size@Base 1:7.2d
  GC_roots_present@Base 1:7.2d
  GC_same_obj@Base 1:7.2d
@@ -488,6 +536,7 @@ libgc.so.1 libgc1c2 #MINVER#
  (arch=ia64 sparc sparc64)GC_save_regs_in_stack@Base 1:7.2d
  (arch=ia64 sparc sparc64)GC_save_regs_ret_val@Base 1:7.2d
  GC_scratch_alloc@Base 1:7.2d
+ GC_set_abort_func@Base 1:7.4.2
  GC_set_all_interior_pointers@Base 1:7.2d
  GC_set_and_save_fault_handler@Base 1:7.2d
  GC_set_dont_expand@Base 1:7.2d
@@ -507,25 +556,31 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_set_max_retries@Base 1:7.2d
  GC_set_no_dls@Base 1:7.2d
  GC_set_non_gc_bytes@Base 1:7.2d
+ GC_set_on_heap_resize@Base 1:7.4.2
  GC_set_oom_fn@Base 1:7.2d
  GC_set_pages_executable@Base 1:7.2d
+ GC_set_push_other_roots@Base 1:7.4.2
  GC_set_start_callback@Base 1:7.2d
  GC_set_stop_func@Base 1:7.2d
+ GC_set_suspend_signal@Base 1:7.4.2
+ GC_set_thr_restart_signal@Base 1:7.4.2
  GC_set_time_limit@Base 1:7.2d
  GC_set_warn_proc@Base 1:7.2d
  GC_setpagesize@Base 1:7.2d
- (arch=armel armhf hurd-i386)GC_setspecific@Base 1:7.2d
  (arch=!mips !mipsel !s390 !s390x)GC_setup_temporary_fault_handler@Base 1:7.2d
  GC_should_collect@Base 1:7.2d
  GC_should_invoke_finalizers@Base 1:7.2d
+ GC_sig_suspend@Base 1:7.4.2
+ GC_sig_thr_restart@Base 1:7.4.2
  GC_signal_mark_stack_overflow@Base 1:7.2d
  GC_size@Base 1:7.2d
- (arch=armel armhf hurd-i386)GC_slow_getspecific@Base 1:7.2d
  GC_smashed@Base 1:7.2d
  GC_split_block@Base 1:7.2d
  GC_stackbottom@Base 1:7.2d
  GC_start_call_back@Base 1:7.2d
  GC_start_debugging@Base 1:7.2d
+ GC_start_debugging_inner@Base 1:7.4.2
+ GC_start_mark_threads@Base 1:7.4.2
  GC_start_reclaim@Base 1:7.2d
  GC_start_routine@Base 1:7.2d
  GC_start_rtn_prepare_thread@Base 1:7.2d
@@ -533,6 +588,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_start_world@Base 1:7.2d
  GC_stderr@Base 1:7.2d
  GC_stdout@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_steal_mark_stack@Base 1:7.4.2
  GC_stop_count@Base 1:7.2d
  GC_stop_init@Base 1:7.2d
  GC_stop_world@Base 1:7.2d
@@ -548,6 +604,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_thr_init@Base 1:7.2d
  GC_thr_initialized@Base 1:7.2d
  GC_thread_exit_proc@Base 1:7.2d
+ GC_thread_is_registered@Base 1:7.4.2
  GC_thread_key@Base 1:7.2d
  GC_threads@Base 1:7.2d
  GC_time_limit@Base 1:7.2d
@@ -565,13 +622,17 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_unpromote_black_lists@Base 1:7.2d
  GC_unreachable_finalize_mark_proc@Base 1:7.2d
  GC_unregister_disappearing_link@Base 1:7.2d
+ GC_unregister_long_link@Base 1:7.4.2
  GC_unregister_my_thread@Base 1:7.2d
  GC_unregister_my_thread_inner@Base 1:7.2d
  GC_uobjfreelist_ptr@Base 1:7.2d
  GC_use_entire_heap@Base 1:7.2d
  GC_used_heap_size_after_full@Base 1:7.2d
  GC_version@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_wait_builder@Base 1:7.4.2
  GC_wait_for_gc_completion@Base 1:7.2d
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_wait_for_reclaim@Base 1:7.4.2
+ (arch=!kfreebsd-amd64 !kfreebsd-i386)GC_wait_marker@Base 1:7.4.2
  GC_with_callee_saves_pushed@Base 1:7.2d
  GC_world_is_stopped@Base 1:7.2d
  GC_world_stopped@Base 1:7.2d
