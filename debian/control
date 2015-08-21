@@ -3,7 +3,7 @@ Maintainer: Christoph Egger <christoph@debian.org>
 Section: libs
 Priority: standard
 Build-Depends: debhelper (>= 9),
- autoconf,
+ dh-autoreconf,
  libatomic-ops-dev (>= 7.3~),
  pkg-config,
  pkg-kde-tools

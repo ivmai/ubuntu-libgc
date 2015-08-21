@@ -1,3 +1,16 @@
+libgc (1:7.4.2-1) experimental; urgency=medium
+
+  * New upstream version
+
+ -- Christoph Egger <christoph@debian.org>  Fri, 21 Aug 2015 11:41:48 +0200
+
+libgc (1:7.4.0-1) experimental; urgency=medium
+
+  * New upstream version
+  * Drops another batch of internal symbols
+
+ -- Christoph Egger <christoph@debian.org>  Mon, 23 Dec 2013 13:30:28 +0100
+
 libgc (1:7.2d-6) unstable; urgency=medium
 
   * Run full autoreconf during build

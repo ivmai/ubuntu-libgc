@@ -1,14 +1,14 @@
 Index: libgc/configure.ac
 ===================================================================
---- libgc.orig/configure.ac	2013-06-09 13:51:58.524131019 +0200
-+++ libgc/configure.ac	2013-06-09 13:52:50.476385004 +0200
-@@ -482,6 +482,9 @@
-  sparc*-*-linux*)
-     machdep="mach_dep.lo sparc_mach_dep.lo"
+--- libgc.orig/configure.ac
++++ libgc/configure.ac
+@@ -572,6 +572,9 @@ case "$host" in
+     dnl This is now redundant, but it is also important for incremental GC
+     dnl performance under Irix.
      ;;
 + sparc*-*-linux*)
 +    machdep="mach_dep.lo sparc_mach_dep.lo"
 +    ;;
   sparc-*-netbsd*)
-     machdep="mach_dep.lo sparc_netbsd_mach_dep.lo"
+     machdep="sparc_netbsd_mach_dep.lo"
      ;;

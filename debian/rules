@@ -8,11 +8,10 @@ DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 LDFLAGS += -pthread
 
 %:
-	dh $@ --with pkgkde_symbolshelper
+	dh $@ --with pkgkde_symbolshelper,autoreconf
 
 override_dh_auto_configure:
 	[ ! -d libatomic_ops-1.2 ] || mv libatomic_ops-1.2 libatomic_ops-1.2.bak
-	autoconf
 	./configure \
 		$(CONFIG_OPTS) \
 		--enable-cplusplus \
@@ -27,9 +26,6 @@ override_dh_auto_configure:
 		--build=$(DEB_BUILD_GNU_TYPE) \
 		--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
 
-override_dh_autoreconf:
-	dh_autoreconf ./autogen.sh
-
 override_dh_auto_test:
 	$(MAKE) check
 
@@ -43,4 +39,4 @@ override_dh_auto_clean:
 	rm -rf autom4te.cache libatomic_ops atomic_ops_sysdeps.S atomic_ops.c
 
 override_dh_installchangelogs:
-	dh_installchangelogs doc/README.changes
+	dh_installchangelogs ChangeLog
