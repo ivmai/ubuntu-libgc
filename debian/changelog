@@ -1,3 +1,20 @@
+libgc (1:7.4.2-4) experimental; urgency=medium
+
+  * Drop 03-add-avr32-support.diff, merged upstream
+  * Drop 04-fix-sparc-ftbfs.diff, merged upstream
+  * add enable-parallel-mark-where-supported.diff to keep PARALLEL_MARK
+    enabled on all platforms where it works
+
+ -- Christoph Egger <christoph@debian.org>  Thu, 24 Sep 2015 17:00:00 +0200
+
+libgc (1:7.4.2-3) experimental; urgency=medium
+
+  * Update Homepage (Closes: #747904)
+  * Remove 01-catch-all-linux.patch as it at least breaks arm64
+  * Import hppa mipsel hurd-i386 and ppc64 symbols
+
+ -- Christoph Egger <christoph@debian.org>  Thu, 24 Sep 2015 13:35:55 +0200
+
 libgc (1:7.4.2-2) experimental; urgency=medium
 
   * update standards version
@@ -10,7 +27,7 @@ libgc (1:7.4.2-2) experimental; urgency=medium
 
 libgc (1:7.4.2-1) experimental; urgency=medium
 
-  * New upstream version
+  * New upstream version (Closes: #796242)
 
  -- Christoph Egger <christoph@debian.org>  Fri, 21 Aug 2015 11:41:48 +0200
 
