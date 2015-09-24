@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 9),
  pkg-config,
  pkg-kde-tools
 Standards-Version: 3.9.6
-Homepage: http://www.hpl.hp.com/personal/Hans_Boehm/gc/
+Homepage: http://www.hboehm.info/gc/
 Vcs-Git: git://anonscm.debian.org/collab-maint/libgc.git
 Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/libgc.git
 
