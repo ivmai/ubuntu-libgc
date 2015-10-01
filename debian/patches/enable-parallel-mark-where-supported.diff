@@ -7,7 +7,7 @@ index 7667949..f146e52 100644
      case "$host" in
       x86-*-linux* | ia64-*-linux* | i586-*-linux* | i686-*-linux* \
 -     | x86_64-*-linux* | alpha-*-linux* | powerpc*-*-linux* | sparc*-*-linux*)
-+     | x86_64-*-linux* | alpha-*-linux* | powerpc*-*-linux* | sparc*-*-linux* \
++     | x86_64-*-linux* | alpha-*-linux* | powerpc-*-linux* | sparc*-*-linux* \
 +     | s390*-*-linux* | ppc64-*-linux* | m68k-*-linux* | mips*-*-linux* \
 +     | arm*-*-linux* | hppa*-*-linux* | ppc-*-linux* )
          AC_DEFINE(GC_LINUX_THREADS)
