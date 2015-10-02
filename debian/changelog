@@ -1,3 +1,9 @@
+libgc (1:7.4.2-6) unstable; urgency=medium
+
+  * Remove unused patches
+
+ -- Christoph Egger <christoph@debian.org>  Fri, 02 Oct 2015 09:02:27 +0200
+
 libgc (1:7.4.2-5) experimental; urgency=medium
 
   * Disable parallel mark on ppc64el
@@ -35,6 +41,7 @@ libgc (1:7.4.2-2) experimental; urgency=medium
 libgc (1:7.4.2-1) experimental; urgency=medium
 
   * New upstream version (Closes: #796242)
+    * Fixes sparc64 build (Closes: #578337)
 
  -- Christoph Egger <christoph@debian.org>  Fri, 21 Aug 2015 11:41:48 +0200
 
