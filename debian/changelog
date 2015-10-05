@@ -1,3 +1,11 @@
+libgc (1:7.4.2-7) unstable; urgency=medium
+
+  * Import symbols from mips64el hppa and x32 (Closes: #800905)
+  * Re-Add support for nocheck, thanks to Helmut for the patch, (Closes:
+    #800906)
+
+ -- Christoph Egger <christoph@debian.org>  Mon, 05 Oct 2015 17:02:32 +0200
+
 libgc (1:7.4.2-6) unstable; urgency=medium
 
   * Remove unused patches
