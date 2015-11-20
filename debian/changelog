@@ -1,3 +1,10 @@
+libgc (1:7.4.2-7.1) unstable; urgency=medium
+
+  * Non-maintainer upload
+  * Import symbols for sh4 (Closes: #805075)
+
+ -- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>  Fri, 20 Nov 2015 11:16:44 +0100
+
 libgc (1:7.4.2-7) unstable; urgency=medium
 
   * Import symbols from mips64el hppa and x32 (Closes: #800905)
