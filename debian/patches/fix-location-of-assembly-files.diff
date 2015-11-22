@@ -1,0 +1,308 @@
+Description: Move assembly files for sparc* and ia64 back to top directory
+ For some reason, the assembly files for sparc* and ia64 were moved into
+ the src sub-directory without updating the corresponding build scripts.
+ This patch moves the files back to the top directory where upstream
+ put them and were the assembly files for the other architectures are
+ located as well.
+ .
+
+--- /dev/null
++++ libgc-7.4.2/ia64_save_regs_in_stack.s
+@@ -0,0 +1,11 @@
++        .text
++        .align 16
++        .global GC_save_regs_in_stack
++        .proc GC_save_regs_in_stack
++GC_save_regs_in_stack:
++        .body
++        flushrs
++        ;;
++        mov r8=ar.bsp
++        br.ret.sptk.few rp
++        .endp GC_save_regs_in_stack
+--- /dev/null
++++ libgc-7.4.2/sparc_mach_dep.S
+@@ -0,0 +1,61 @@
++!	SPARCompiler 3.0 and later apparently no longer handles
++!	asm outside functions.  So we need a separate .s file
++!	This is only set up for SunOS 5, not SunOS 4.
++!	Assumes this is called before the stack contents are
++!	examined.
++
++	.seg 	"text"
++	.globl	GC_save_regs_in_stack
++GC_save_regs_in_stack:
++#if defined(__arch64__) || defined(__sparcv9)
++	save	%sp,-128,%sp
++	flushw
++	ret
++	  restore %sp,2047+128,%o0
++#else /* 32 bit SPARC */
++	ta	0x3   ! ST_FLUSH_WINDOWS
++	mov	%sp,%o0
++	retl
++	nop
++#endif /* 32 bit SPARC */
++.GC_save_regs_in_stack_end:
++	.size GC_save_regs_in_stack,.GC_save_regs_in_stack_end-GC_save_regs_in_stack
++
++! GC_clear_stack_inner(arg, limit) clears stack area up to limit and
++! returns arg.  Stack clearing is crucial on SPARC, so we supply
++! an assembly version that s more careful.  Assumes limit is hotter
++! than sp, and limit is 8 byte aligned.
++	.globl	GC_clear_stack_inner
++GC_clear_stack_inner:
++#if defined(__arch64__) || defined(__sparcv9)
++	mov %sp,%o2		! Save sp
++	add %sp,2047-8,%o3	! p = sp+bias-8
++	add %o1,-2047-192,%sp	! Move sp out of the way,
++  				! so that traps still work.
++  				! Includes some extra words
++  				! so we can be sloppy below.
++loop:
++	stx %g0,[%o3]		! *(long *)p = 0
++	cmp %o3,%o1
++	bgu,pt %xcc, loop	! if (p > limit) goto loop
++          add %o3,-8,%o3	! p -= 8 (delay slot)
++	retl
++    	  mov %o2,%sp		! Restore sp., delay slot
++#else  /* 32 bit SPARC */
++	mov	%sp,%o2		! Save sp
++	add	%sp,-8,%o3	! p = sp-8
++	clr	%g1		! [g0,g1] = 0
++	add	%o1,-0x60,%sp	! Move sp out of the way,
++				! so that traps still work.
++				! Includes some extra words
++				! so we can be sloppy below.
++loop:
++	std	%g0,[%o3]	! *(long long *)p = 0
++	cmp	%o3,%o1
++	bgu	loop		! if (p > limit) goto loop
++	  add	%o3,-8,%o3	! p -= 8 (delay slot)
++	retl
++	  mov	%o2,%sp		! Restore sp., delay slot
++#endif  /* 32 bit SPARC */
++.GC_clear_stack_inner_end:
++      	.size GC_clear_stack_inner,.GC_clear_stack_inner_end-GC_clear_stack_inner
+--- /dev/null
++++ libgc-7.4.2/sparc_netbsd_mach_dep.s
+@@ -0,0 +1,34 @@
++!	SPARCompiler 3.0 and later apparently no longer handles
++!	asm outside functions.  So we need a separate .s file
++!	This is only set up for SunOS 4.
++!	Assumes this is called before the stack contents are
++!	examined.
++
++#include "machine/asm.h"
++
++	.seg 	"text"
++	.globl	_C_LABEL(GC_save_regs_in_stack)
++	.globl 	_C_LABEL(GC_push_regs)
++_C_LABEL(GC_save_regs_in_stack):
++_C_LABEL(GC_push_regs):
++	ta	0x3   ! ST_FLUSH_WINDOWS
++	mov	%sp,%o0
++	retl
++	nop
++
++	.globl	_C_LABEL(GC_clear_stack_inner)
++_C_LABEL(GC_clear_stack_inner):
++	mov	%sp,%o2		! Save sp
++	add	%sp,-8,%o3	! p = sp-8
++	clr	%g1		! [g0,g1] = 0
++	add	%o1,-0x60,%sp	! Move sp out of the way,
++				! so that traps still work.
++				! Includes some extra words
++				! so we can be sloppy below.
++loop:
++	std	%g0,[%o3]	! *(long long *)p = 0
++	cmp	%o3,%o1
++	bgu	loop		! if (p > limit) goto loop
++	add	%o3,-8,%o3	! p -= 8 (delay slot)
++	retl
++	mov	%o2,%sp		! Restore sp., delay slot
+--- /dev/null
++++ libgc-7.4.2/sparc_sunos4_mach_dep.s
+@@ -0,0 +1,32 @@
++!	SPARCompiler 3.0 and later apparently no longer handles
++!	asm outside functions.  So we need a separate .s file
++!	This is only set up for SunOS 4.
++!	Assumes this is called before the stack contents are
++!	examined.
++
++	.seg 	"text"
++	.globl	_GC_save_regs_in_stack
++	.globl 	_GC_push_regs
++_GC_save_regs_in_stack:
++_GC_push_regs:
++	ta	0x3   ! ST_FLUSH_WINDOWS
++	mov	%sp,%o0
++	retl
++	nop
++
++	.globl	_GC_clear_stack_inner
++_GC_clear_stack_inner:
++	mov	%sp,%o2		! Save sp
++	add	%sp,-8,%o3	! p = sp-8
++	clr	%g1		! [g0,g1] = 0
++	add	%o1,-0x60,%sp	! Move sp out of the way,
++				! so that traps still work.
++				! Includes some extra words
++				! so we can be sloppy below.
++loop:
++	std	%g0,[%o3]	! *(long long *)p = 0
++	cmp	%o3,%o1
++	bgu	loop		! if (p > limit) goto loop
++	  add	%o3,-8,%o3	! p -= 8 (delay slot)
++	retl
++	  mov	%o2,%sp		! Restore sp., delay slot
+--- libgc-7.4.2.orig/src/ia64_save_regs_in_stack.s
++++ /dev/null
+@@ -1,11 +0,0 @@
+-        .text
+-        .align 16
+-        .global GC_save_regs_in_stack
+-        .proc GC_save_regs_in_stack
+-GC_save_regs_in_stack:
+-        .body
+-        flushrs
+-        ;;
+-        mov r8=ar.bsp
+-        br.ret.sptk.few rp
+-        .endp GC_save_regs_in_stack
+--- libgc-7.4.2.orig/src/sparc_mach_dep.S
++++ /dev/null
+@@ -1,61 +0,0 @@
+-!	SPARCompiler 3.0 and later apparently no longer handles
+-!	asm outside functions.  So we need a separate .s file
+-!	This is only set up for SunOS 5, not SunOS 4.
+-!	Assumes this is called before the stack contents are
+-!	examined.
+-
+-	.seg 	"text"
+-	.globl	GC_save_regs_in_stack
+-GC_save_regs_in_stack:
+-#if defined(__arch64__) || defined(__sparcv9)
+-	save	%sp,-128,%sp
+-	flushw
+-	ret
+-	  restore %sp,2047+128,%o0
+-#else /* 32 bit SPARC */
+-	ta	0x3   ! ST_FLUSH_WINDOWS
+-	mov	%sp,%o0
+-	retl
+-	nop
+-#endif /* 32 bit SPARC */
+-.GC_save_regs_in_stack_end:
+-	.size GC_save_regs_in_stack,.GC_save_regs_in_stack_end-GC_save_regs_in_stack
+-
+-! GC_clear_stack_inner(arg, limit) clears stack area up to limit and
+-! returns arg.  Stack clearing is crucial on SPARC, so we supply
+-! an assembly version that s more careful.  Assumes limit is hotter
+-! than sp, and limit is 8 byte aligned.
+-	.globl	GC_clear_stack_inner
+-GC_clear_stack_inner:
+-#if defined(__arch64__) || defined(__sparcv9)
+-	mov %sp,%o2		! Save sp
+-	add %sp,2047-8,%o3	! p = sp+bias-8
+-	add %o1,-2047-192,%sp	! Move sp out of the way,
+-  				! so that traps still work.
+-  				! Includes some extra words
+-  				! so we can be sloppy below.
+-loop:
+-	stx %g0,[%o3]		! *(long *)p = 0
+-	cmp %o3,%o1
+-	bgu,pt %xcc, loop	! if (p > limit) goto loop
+-          add %o3,-8,%o3	! p -= 8 (delay slot)
+-	retl
+-    	  mov %o2,%sp		! Restore sp., delay slot
+-#else  /* 32 bit SPARC */
+-	mov	%sp,%o2		! Save sp
+-	add	%sp,-8,%o3	! p = sp-8
+-	clr	%g1		! [g0,g1] = 0
+-	add	%o1,-0x60,%sp	! Move sp out of the way,
+-				! so that traps still work.
+-				! Includes some extra words
+-				! so we can be sloppy below.
+-loop:
+-	std	%g0,[%o3]	! *(long long *)p = 0
+-	cmp	%o3,%o1
+-	bgu	loop		! if (p > limit) goto loop
+-	  add	%o3,-8,%o3	! p -= 8 (delay slot)
+-	retl
+-	  mov	%o2,%sp		! Restore sp., delay slot
+-#endif  /* 32 bit SPARC */
+-.GC_clear_stack_inner_end:
+-      	.size GC_clear_stack_inner,.GC_clear_stack_inner_end-GC_clear_stack_inner
+--- libgc-7.4.2.orig/src/sparc_netbsd_mach_dep.s
++++ /dev/null
+@@ -1,34 +0,0 @@
+-!	SPARCompiler 3.0 and later apparently no longer handles
+-!	asm outside functions.  So we need a separate .s file
+-!	This is only set up for SunOS 4.
+-!	Assumes this is called before the stack contents are
+-!	examined.
+-
+-#include "machine/asm.h"
+-
+-	.seg 	"text"
+-	.globl	_C_LABEL(GC_save_regs_in_stack)
+-	.globl 	_C_LABEL(GC_push_regs)
+-_C_LABEL(GC_save_regs_in_stack):
+-_C_LABEL(GC_push_regs):
+-	ta	0x3   ! ST_FLUSH_WINDOWS
+-	mov	%sp,%o0
+-	retl
+-	nop
+-
+-	.globl	_C_LABEL(GC_clear_stack_inner)
+-_C_LABEL(GC_clear_stack_inner):
+-	mov	%sp,%o2		! Save sp
+-	add	%sp,-8,%o3	! p = sp-8
+-	clr	%g1		! [g0,g1] = 0
+-	add	%o1,-0x60,%sp	! Move sp out of the way,
+-				! so that traps still work.
+-				! Includes some extra words
+-				! so we can be sloppy below.
+-loop:
+-	std	%g0,[%o3]	! *(long long *)p = 0
+-	cmp	%o3,%o1
+-	bgu	loop		! if (p > limit) goto loop
+-	add	%o3,-8,%o3	! p -= 8 (delay slot)
+-	retl
+-	mov	%o2,%sp		! Restore sp., delay slot
+--- libgc-7.4.2.orig/src/sparc_sunos4_mach_dep.s
++++ /dev/null
+@@ -1,32 +0,0 @@
+-!	SPARCompiler 3.0 and later apparently no longer handles
+-!	asm outside functions.  So we need a separate .s file
+-!	This is only set up for SunOS 4.
+-!	Assumes this is called before the stack contents are
+-!	examined.
+-
+-	.seg 	"text"
+-	.globl	_GC_save_regs_in_stack
+-	.globl 	_GC_push_regs
+-_GC_save_regs_in_stack:
+-_GC_push_regs:
+-	ta	0x3   ! ST_FLUSH_WINDOWS
+-	mov	%sp,%o0
+-	retl
+-	nop
+-
+-	.globl	_GC_clear_stack_inner
+-_GC_clear_stack_inner:
+-	mov	%sp,%o2		! Save sp
+-	add	%sp,-8,%o3	! p = sp-8
+-	clr	%g1		! [g0,g1] = 0
+-	add	%o1,-0x60,%sp	! Move sp out of the way,
+-				! so that traps still work.
+-				! Includes some extra words
+-				! so we can be sloppy below.
+-loop:
+-	std	%g0,[%o3]	! *(long long *)p = 0
+-	cmp	%o3,%o1
+-	bgu	loop		! if (p > limit) goto loop
+-	  add	%o3,-8,%o3	! p -= 8 (delay slot)
+-	retl
+-	  mov	%o2,%sp		! Restore sp., delay slot
