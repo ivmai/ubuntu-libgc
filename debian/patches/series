@@ -1,3 +1,4 @@
 02-manpage.diff
 enable-threads-on-hurd.diff
 enable-parallel-mark-where-supported.diff
+fix-location-of-assembly-files.diff
