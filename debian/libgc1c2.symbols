@@ -465,8 +465,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_push_finalizer_structures@Base 1:7.2d
  GC_push_gc_structures@Base 1:7.2d
  (arch=arm64 hppa hurd-i386 kfreebsd-amd64 kfreebsd-i386 ppc64el sh4)GC_push_marked1@Base 1:7.4.2
- (arch=!amd64 !armel !armhf !i386 !m68k !mips !mips64el !mipsel !powerpc !ppc64 !s390x !sparc64 !x32)GC_push_marked2@Base 1:7.4.2
- (arch=!amd64 !armel !armhf !i386 !m68k !mips !mips64el !mipsel !powerpc !ppc64 !s390x !sparc64 !x32)GC_push_marked4@Base 1:7.4.2
+ (arch=!amd64 !armel !armhf !i386 !m68k !mips !mips64el !mipsel !powerpc !ppc64 !s390x !sparc !sparc64 !x32)GC_push_marked2@Base 1:7.4.2
+ (arch=!amd64 !armel !armhf !i386 !m68k !mips !mips64el !mipsel !powerpc !ppc64 !s390x !sparc !sparc64 !x32)GC_push_marked4@Base 1:7.4.2
  GC_push_marked@Base 1:7.2d
  GC_push_next_marked@Base 1:7.2d
  GC_push_next_marked_dirty@Base 1:7.2d
