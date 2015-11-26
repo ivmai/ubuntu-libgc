@@ -1,6 +1,13 @@
+libgc (1:7.4.2-7.3) unstable; urgency=medium
+
+  * Non-maintainer upload
+  * Import symbols for sparc (Closes: #806312)
+
+ -- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>  Thu, 26 Nov 2015 18:16:48 +0100
+
 libgc (1:7.4.2-7.2) unstable; urgency=medium
 
-  * Non-maintainer upload.
+  * Non-maintainer upload
   * Add debian/patches/fix-location-of-assembly-files.diff to fix
     location of assembly files for sparc* and ia64 (Closes: 805679)
   * Import symbols for sparc64 (Closes: #805680)
