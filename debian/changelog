@@ -1,3 +1,11 @@
+libgc (1:7.4.2-7.4) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Import symbols for alpha (Closes: #818356)
+  * Import symbols for powerpcspe (Closes: #818608)
+
+ -- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>  Fri, 18 Mar 2016 17:18:10 +0100
+
 libgc (1:7.4.2-7.3) unstable; urgency=medium
 
   * Non-maintainer upload
