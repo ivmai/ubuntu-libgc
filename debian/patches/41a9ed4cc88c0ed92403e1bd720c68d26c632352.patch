@@ -1,0 +1,62 @@
+From 41a9ed4cc88c0ed92403e1bd720c68d26c632352 Mon Sep 17 00:00:00 2001
+From: Ivan Maidanski <ivmai@mail.ru>
+Date: Thu, 15 Sep 2016 18:40:21 +0300
+Subject: [PATCH] Fix calloc_explicitly_typed in case of lb*n overflow
+ (Cherry-pick commit b9d1634 from 'release-7_6' branch.)
+
+* typd_mlc.c: Include limits.h (for SIZE_MAX).
+* typd_mlc.c (GC_SIZE_MAX, GC_SQRT_SIZE_MAX): New macro (same as in
+malloc.c).
+* typd_mlc.c (GC_calloc_explicitly_typed): Return NULL if lb * n
+overflows (same algorithm as in calloc defined in malloc.c); eliminate
+lb *= n code duplication.
+---
+ typd_mlc.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
+
+Index: libgc/typd_mlc.c
+===================================================================
+--- libgc.orig/typd_mlc.c
++++ libgc/typd_mlc.c
+@@ -675,6 +675,15 @@ GC_API GC_ATTR_MALLOC void * GC_CALL
+    return((void *) op);
+ }
+ 
++#include <limits.h>
++#ifdef SIZE_MAX
++# define GC_SIZE_MAX SIZE_MAX
++#else
++# define GC_SIZE_MAX (~(size_t)0)
++#endif
++
++#define GC_SQRT_SIZE_MAX ((((size_t)1) << (WORDSZ / 2)) - 1)
++
+ GC_API GC_ATTR_MALLOC void * GC_CALL GC_calloc_explicitly_typed(size_t n,
+                                                         size_t lb, GC_descr d)
+ {
+@@ -688,17 +697,20 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_
+     DCL_LOCK_STATE;
+ 
+     GC_ASSERT(GC_explicit_typing_initialized);
+-    descr_type = GC_make_array_descriptor((word)n, (word)lb, d,
+-                                          &simple_descr, &complex_descr, &leaf);
++    descr_type = GC_make_array_descriptor((word)n, (word)lb, d, &simple_descr,
++                                          &complex_descr, &leaf);
++    if ((lb | n) > GC_SQRT_SIZE_MAX /* fast initial check */
++        && lb > 0 && n > GC_SIZE_MAX / lb)
++      return NULL; /* n*lb overflow */
++    lb *= n;
+     switch(descr_type) {
+         case NO_MEM: return(0);
+-        case SIMPLE: return(GC_malloc_explicitly_typed(n*lb, simple_descr));
++        case SIMPLE:
++            return GC_malloc_explicitly_typed(lb, simple_descr);
+         case LEAF:
+-            lb *= n;
+             lb += sizeof(struct LeafDescriptor) + TYPD_EXTRA_BYTES;
+             break;
+         case COMPLEX:
+-            lb *= n;
+             lb += TYPD_EXTRA_BYTES;
+             break;
+     }

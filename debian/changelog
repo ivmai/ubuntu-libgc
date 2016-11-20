@@ -1,9 +1,18 @@
+libgc (1:7.4.4-1) experimental; urgency=medium
+
+  * New upstream release
+  * Import fixes for CVE-2016-9427 (Integer overflow in GC_MALLOC_ATOMIC)
+    from upstream 7.4 branch (Closes: #844771)
+  * Disable fix-location-of-assembly-files.diff, included upstream
+
+ -- Christoph Egger <christoph@debian.org>  Sun, 20 Nov 2016 13:59:24 +0100
+
 libgc (1:7.4.2-8) unstable; urgency=medium
 
   * Fix symbols for nios (Closes: #822445), Thanks to Helmut for report
     + patch!
 
- -- Christoph Egger <christoph@debian.org>  Tue, 17 May 2016 16:36:10 +0200
+ -- Christoph Egger <christoph@debian.org>  Tue, 17 May 2016 16:31:02 +0200
 
 libgc (1:7.4.2-7.4) unstable; urgency=medium
 
