@@ -1,0 +1,825 @@
+From 0b6818708f7644db5c7bd0cc80e7adaa5a889257 Mon Sep 17 00:00:00 2001
+From: Ivan Maidanski <ivmai@mail.ru>
+Date: Tue, 20 Sep 2016 00:07:47 +0300
+Subject: [PATCH] Fix malloc routines to prevent size value wrap-around
+ (Cherry-pick commit f9c8aa3 from 'release-7_6' branch.)
+
+See issue #135 on Github.
+
+* allchblk.c (GC_allochblk, GC_allochblk_nth): Use
+OBJ_SZ_TO_BLOCKS_CHECKED instead of OBJ_SZ_TO_BLOCKS.
+* malloc.c (GC_alloc_large): Likewise.
+* alloc.c (GC_expand_hp_inner): Type of "bytes" local variable changed
+from word to size_t; cast ROUNDUP_PAGESIZE argument to size_t; prevent
+overflow when computing GC_heapsize+bytes > GC_max_heapsize.
+* dbg_mlc.c (GC_debug_malloc, GC_debug_malloc_ignore_off_page,
+GC_debug_malloc_atomic_ignore_off_page,
+GC_debug_generic_malloc_inner,
+GC_debug_generic_malloc_inner_ignore_off_page,
+GC_debug_malloc_stubborn, GC_debug_malloc_atomic,
+GC_debug_malloc_uncollectable, GC_debug_malloc_atomic_uncollectable):
+Use SIZET_SAT_ADD (instead of "+" operator) to add extra bytes to lb
+value.
+* fnlz_mlc.c (GC_finalized_malloc): Likewise.
+* gcj_mlc.c (GC_debug_gcj_malloc): Likewise.
+* include/private/gc_priv.h (ROUNDUP_GRANULE_SIZE, ROUNDED_UP_GRANULES,
+ADD_SLOP, ROUNDUP_PAGESIZE): Likewise.
+* include/private/gcconfig.h (GET_MEM): Likewise.
+* mallocx.c (GC_malloc_many, GC_memalign): Likewise.
+* os_dep.c (GC_wince_get_mem, GC_win32_get_mem): Likewise.
+* typd_mlc.c (GC_malloc_explicitly_typed,
+GC_malloc_explicitly_typed_ignore_off_page,
+GC_calloc_explicitly_typed): Likewise.
+* headers.c (GC_scratch_alloc): Change type of bytes_to_get from word
+to size_t (because ROUNDUP_PAGESIZE_IF_MMAP result type changed).
+* include/private/gc_priv.h: Include limits.h (unless SIZE_MAX already
+defined).
+* include/private/gc_priv.h (GC_SIZE_MAX, GC_SQRT_SIZE_MAX): Move from
+malloc.c file.
+* include/private/gc_priv.h (SIZET_SAT_ADD): New macro (defined before
+include gcconfig.h).
+* include/private/gc_priv.h (EXTRA_BYTES, GC_page_size): Change type
+to size_t.
+* os_dep.c (GC_page_size): Likewise.
+* include/private/gc_priv.h (ROUNDUP_GRANULE_SIZE, ROUNDED_UP_GRANULES,
+ADD_SLOP, ROUNDUP_PAGESIZE): Add comment about the argument.
+* include/private/gcconfig.h (GET_MEM): Likewise.
+* include/private/gc_priv.h (ROUNDUP_GRANULE_SIZE, ROUNDED_UP_GRANULES,
+ADD_SLOP, OBJ_SZ_TO_BLOCKS, ROUNDUP_PAGESIZE,
+ROUNDUP_PAGESIZE_IF_MMAP): Rename argument to "lb".
+* include/private/gc_priv.h (OBJ_SZ_TO_BLOCKS_CHECKED): New macro.
+* include/private/gcconfig.h (GC_win32_get_mem, GC_wince_get_mem,
+GC_unix_get_mem): Change argument type from word to int.
+* os_dep.c (GC_unix_mmap_get_mem, GC_unix_get_mem,
+GC_unix_sbrk_get_mem, GC_wince_get_mem, GC_win32_get_mem): Likewise.
+* malloc.c (GC_alloc_large_and_clear): Call OBJ_SZ_TO_BLOCKS only
+if no value wrap around is guaranteed.
+* malloc.c (GC_generic_malloc): Do not check for lb_rounded < lb case
+(because ROUNDED_UP_GRANULES and GRANULES_TO_BYTES guarantees no value
+wrap around).
+* mallocx.c (GC_generic_malloc_ignore_off_page): Likewise.
+* misc.c (GC_init_size_map): Change "i" local variable type from int
+to size_t.
+* os_dep.c (GC_write_fault_handler, catch_exception_raise): Likewise.
+* misc.c (GC_envfile_init): Cast len to size_t when passed to
+ROUNDUP_PAGESIZE_IF_MMAP.
+* os_dep.c (GC_setpagesize): Cast GC_sysinfo.dwPageSize and
+GETPAGESIZE() to size_t (when setting GC_page_size).
+* os_dep.c (GC_unix_mmap_get_mem):
+Expand ROUNDUP_PAGESIZE macro but without value wrap-around checking
+(the argument is of word type).
+* os_dep.c (GC_unix_mmap_get_mem): Replace -GC_page_size with
+~GC_page_size+1 (because GC_page_size is unsigned); remove redundant
+cast to size_t.
+* os_dep.c (GC_unix_sbrk_get_mem): Add explicit cast of GC_page_size
+to SBRK_ARG_T.
+* os_dep.c (GC_wince_get_mem): Change type of res_bytes local variable
+to size_t.
+* typd_mlc.c: Do not include limits.h.
+* typd_mlc.c (GC_SIZE_MAX, GC_SQRT_SIZE_MAX): Remove (as defined in
+gc_priv.h now).
+---
+ allchblk.c                 |  4 ++--
+ alloc.c                    | 22 +++++++++-------------
+ dbg_mlc.c                  | 23 +++++++++++++----------
+ fnlz_mlc.c                 |  2 +-
+ gcj_mlc.c                  |  3 ++-
+ headers.c                  |  3 +--
+ include/private/gc_priv.h  | 45 +++++++++++++++++++++++++++++++++------------
+ include/private/gcconfig.h | 36 ++++++++++++++++++++++--------------
+ malloc.c                   | 19 ++++---------------
+ mallocx.c                  | 12 ++++++------
+ misc.c                     |  6 +++---
+ os_dep.c                   | 44 +++++++++++++++++++++++---------------------
+ typd_mlc.c                 | 20 ++++++--------------
+ 13 files changed, 125 insertions(+), 114 deletions(-)
+
+Index: libgc/allchblk.c
+===================================================================
+--- libgc.orig/allchblk.c
++++ libgc/allchblk.c
+@@ -583,7 +583,7 @@ GC_allochblk(size_t sz, int kind, unsign
+                      /* split.                                          */
+ 
+     GC_ASSERT((sz & (GRANULE_BYTES - 1)) == 0);
+-    blocks = OBJ_SZ_TO_BLOCKS(sz);
++    blocks = OBJ_SZ_TO_BLOCKS_CHECKED(sz);
+     if ((signed_word)(blocks * HBLKSIZE) < 0) {
+       return 0;
+     }
+@@ -646,7 +646,7 @@ GC_allochblk_nth(size_t sz, int kind, un
+     signed_word size_needed;    /* number of bytes in requested objects */
+     signed_word size_avail;     /* bytes available in this block        */
+ 
+-    size_needed = HBLKSIZE * OBJ_SZ_TO_BLOCKS(sz);
++    size_needed = HBLKSIZE * OBJ_SZ_TO_BLOCKS_CHECKED(sz);
+ 
+     /* search for a big enough block in free list */
+         for (hbp = GC_hblkfreelist[n];; hbp = hhdr -> hb_next) {
+Index: libgc/alloc.c
+===================================================================
+--- libgc.orig/alloc.c
++++ libgc/alloc.c
+@@ -1154,32 +1154,28 @@ GC_word GC_max_retries = 0;
+ /* Returns FALSE on failure.                                            */
+ GC_INNER GC_bool GC_expand_hp_inner(word n)
+ {
+-    word bytes;
++    size_t bytes;
+     struct hblk * space;
+     word expansion_slop;        /* Number of bytes by which we expect the */
+                                 /* heap to expand soon.                   */
+ 
+     if (n < MINHINCR) n = MINHINCR;
+-    bytes = n * HBLKSIZE;
+-    /* Make sure bytes is a multiple of GC_page_size */
+-      {
+-        word mask = GC_page_size - 1;
+-        bytes += mask;
+-        bytes &= ~mask;
+-      }
+-
+-    if (GC_max_heapsize != 0 && GC_heapsize + bytes > GC_max_heapsize) {
++    bytes = ROUNDUP_PAGESIZE((size_t)n * HBLKSIZE);
++    if (GC_max_heapsize != 0
++        && (GC_max_heapsize < (word)bytes
++            || GC_heapsize > GC_max_heapsize - (word)bytes)) {
+         /* Exceeded self-imposed limit */
+         return(FALSE);
+     }
+     space = GET_MEM(bytes);
+     GC_add_to_our_memory((ptr_t)space, bytes);
+     if (space == 0) {
+-        WARN("Failed to expand heap by %" WARN_PRIdPTR " bytes\n", bytes);
++        WARN("Failed to expand heap by %" WARN_PRIdPTR " bytes\n",
++             (word)bytes);
+         return(FALSE);
+     }
+     GC_INFOLOG_PRINTF("Grow heap to %lu KiB after %lu bytes allocated\n",
+-                      TO_KiB_UL(GC_heapsize + bytes),
++                      TO_KiB_UL(GC_heapsize + (word)bytes),
+                       (unsigned long)GC_bytes_allocd);
+     /* Adjust heap limits generously for blacklisting to work better.   */
+     /* GC_add_to_heap performs minimal adjustment needed for            */
+@@ -1189,7 +1185,7 @@ GC_INNER GC_bool GC_expand_hp_inner(word
+         || (GC_last_heap_addr != 0
+             && (word)GC_last_heap_addr < (word)space)) {
+         /* Assume the heap is growing up */
+-        word new_limit = (word)space + bytes + expansion_slop;
++        word new_limit = (word)space + (word)bytes + expansion_slop;
+         if (new_limit > (word)space) {
+           GC_greatest_plausible_heap_addr =
+             (void *)GC_max((word)GC_greatest_plausible_heap_addr,
+Index: libgc/dbg_mlc.c
+===================================================================
+--- libgc.orig/dbg_mlc.c
++++ libgc/dbg_mlc.c
+@@ -514,7 +514,7 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_
+     /* Note that according to malloc() specification, if size is 0 then */
+     /* malloc() returns either NULL, or a unique pointer value that can */
+     /* later be successfully passed to free(). We always do the latter. */
+-    result = GC_malloc(lb + DEBUG_BYTES);
++    result = GC_malloc(SIZET_SAT_ADD(lb, DEBUG_BYTES));
+ #   ifdef GC_ADD_CALLER
+       if (s == NULL) {
+         GC_caller_func_offset(ra, &s, &i);
+@@ -535,7 +535,7 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_
+ GC_API GC_ATTR_MALLOC void * GC_CALL
+     GC_debug_malloc_ignore_off_page(size_t lb, GC_EXTRA_PARAMS)
+ {
+-    void * result = GC_malloc_ignore_off_page(lb + DEBUG_BYTES);
++    void * result = GC_malloc_ignore_off_page(SIZET_SAT_ADD(lb, DEBUG_BYTES));
+ 
+     if (result == 0) {
+         GC_err_printf("GC_debug_malloc_ignore_off_page(%lu)"
+@@ -552,7 +552,8 @@ GC_API GC_ATTR_MALLOC void * GC_CALL
+ GC_API GC_ATTR_MALLOC void * GC_CALL
+     GC_debug_malloc_atomic_ignore_off_page(size_t lb, GC_EXTRA_PARAMS)
+ {
+-    void * result = GC_malloc_atomic_ignore_off_page(lb + DEBUG_BYTES);
++    void * result = GC_malloc_atomic_ignore_off_page(
++                                SIZET_SAT_ADD(lb, DEBUG_BYTES));
+ 
+     if (result == 0) {
+         GC_err_printf("GC_debug_malloc_atomic_ignore_off_page(%lu)"
+@@ -574,7 +575,8 @@ GC_API GC_ATTR_MALLOC void * GC_CALL
+   /* we already hold the GC lock.                                       */
+   GC_INNER void * GC_debug_generic_malloc_inner(size_t lb, int k)
+   {
+-    void * result = GC_generic_malloc_inner(lb + DEBUG_BYTES, k);
++    void * result = GC_generic_malloc_inner(
++                                SIZET_SAT_ADD(lb, DEBUG_BYTES), k);
+ 
+     if (result == 0) {
+         GC_err_printf("GC internal allocation (%lu bytes) returning NULL\n",
+@@ -592,7 +594,7 @@ GC_API GC_ATTR_MALLOC void * GC_CALL
+                                                                 int k)
+   {
+     void * result = GC_generic_malloc_inner_ignore_off_page(
+-                                                lb + DEBUG_BYTES, k);
++                                SIZET_SAT_ADD(lb, DEBUG_BYTES), k);
+ 
+     if (result == 0) {
+         GC_err_printf("GC internal allocation (%lu bytes) returning NULL\n",
+@@ -611,7 +613,7 @@ GC_API GC_ATTR_MALLOC void * GC_CALL
+   GC_API GC_ATTR_MALLOC void * GC_CALL GC_debug_malloc_stubborn(size_t lb,
+                                                         GC_EXTRA_PARAMS)
+   {
+-    void * result = GC_malloc_stubborn(lb + DEBUG_BYTES);
++    void * result = GC_malloc_stubborn(SIZET_SAT_ADD(lb, DEBUG_BYTES));
+ 
+     if (result == 0) {
+         GC_err_printf("GC_debug_malloc_stubborn(%lu)"
+@@ -674,7 +676,7 @@ GC_API GC_ATTR_MALLOC void * GC_CALL
+ GC_API GC_ATTR_MALLOC void * GC_CALL GC_debug_malloc_atomic(size_t lb,
+                                                             GC_EXTRA_PARAMS)
+ {
+-    void * result = GC_malloc_atomic(lb + DEBUG_BYTES);
++    void * result = GC_malloc_atomic(SIZET_SAT_ADD(lb, DEBUG_BYTES));
+ 
+     if (result == 0) {
+         GC_err_printf("GC_debug_malloc_atomic(%lu) returning NULL (%s:%d)\n",
+@@ -752,7 +754,8 @@ GC_API GC_ATTR_MALLOC char * GC_CALL GC_
+ GC_API GC_ATTR_MALLOC void * GC_CALL GC_debug_malloc_uncollectable(size_t lb,
+                                                         GC_EXTRA_PARAMS)
+ {
+-    void * result = GC_malloc_uncollectable(lb + UNCOLLECTABLE_DEBUG_BYTES);
++    void * result = GC_malloc_uncollectable(
++                                SIZET_SAT_ADD(lb, UNCOLLECTABLE_DEBUG_BYTES));
+ 
+     if (result == 0) {
+         GC_err_printf("GC_debug_malloc_uncollectable(%lu)"
+@@ -770,8 +773,8 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_
+   GC_API GC_ATTR_MALLOC void * GC_CALL
+         GC_debug_malloc_atomic_uncollectable(size_t lb, GC_EXTRA_PARAMS)
+   {
+-    void * result =
+-        GC_malloc_atomic_uncollectable(lb + UNCOLLECTABLE_DEBUG_BYTES);
++    void * result = GC_malloc_atomic_uncollectable(
++                                SIZET_SAT_ADD(lb, UNCOLLECTABLE_DEBUG_BYTES));
+ 
+     if (result == 0) {
+         GC_err_printf("GC_debug_malloc_atomic_uncollectable(%lu)"
+Index: libgc/fnlz_mlc.c
+===================================================================
+--- libgc.orig/fnlz_mlc.c
++++ libgc/fnlz_mlc.c
+@@ -94,7 +94,7 @@ GC_API void GC_CALL GC_register_disclaim
+     word lg;
+     DCL_LOCK_STATE;
+ 
+-    lb += sizeof(word);
++    lb = SIZET_SAT_ADD(lb, sizeof(word));
+     GC_ASSERT(done_init);
+     if (SMALL_OBJ(lb)) {
+         GC_DBG_COLLECT_AT_MALLOC(lb);
+Index: libgc/gcj_mlc.c
+===================================================================
+--- libgc.orig/gcj_mlc.c
++++ libgc/gcj_mlc.c
+@@ -216,7 +216,8 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_
+     /* confuse the backtrace.                                   */
+     LOCK();
+     maybe_finalize();
+-    result = GC_generic_malloc_inner(lb + DEBUG_BYTES, GC_gcj_debug_kind);
++    result = GC_generic_malloc_inner(SIZET_SAT_ADD(lb, DEBUG_BYTES),
++                                     GC_gcj_debug_kind);
+     if (result == 0) {
+         GC_oom_func oom_fn = GC_oom_fn;
+         UNLOCK();
+Index: libgc/headers.c
+===================================================================
+--- libgc.orig/headers.c
++++ libgc/headers.c
+@@ -119,8 +119,7 @@ GC_INNER ptr_t GC_scratch_alloc(size_t b
+ {
+     register ptr_t result = scratch_free_ptr;
+ 
+-    bytes += GRANULE_BYTES-1;
+-    bytes &= ~(GRANULE_BYTES-1);
++    bytes = ROUNDUP_GRANULE_SIZE(bytes);
+     scratch_free_ptr += bytes;
+     if ((word)scratch_free_ptr <= (word)GC_scratch_end_ptr) {
+         return(result);
+Index: libgc/include/private/gc_priv.h
+===================================================================
+--- libgc.orig/include/private/gc_priv.h
++++ libgc/include/private/gc_priv.h
+@@ -90,6 +90,20 @@ typedef char * ptr_t;   /* A generic poi
+                         /* byte displacements and which can be used     */
+                         /* for address comparisons.                     */
+ 
++#ifndef SIZE_MAX
++# include <limits.h>
++#endif
++#ifdef SIZE_MAX
++# define GC_SIZE_MAX SIZE_MAX
++#else
++# define GC_SIZE_MAX (~(size_t)0)
++#endif
++
++/* Saturated addition of size_t values.  Used to avoid value wrap       */
++/* around on overflow.  The arguments should have no side effects.      */
++#define SIZET_SAT_ADD(a, b) \
++                ((a) < GC_SIZE_MAX - (b) ? (a) + (b) : GC_SIZE_MAX)
++
+ #ifndef GCCONFIG_H
+ # include "gcconfig.h"
+ #endif
+@@ -277,9 +291,9 @@ typedef char * ptr_t;   /* A generic poi
+ # ifdef LINT2
+     /* Explicitly instruct the code analysis tool that                  */
+     /* GC_all_interior_pointers is assumed to have only 0 or 1 value.   */
+-#   define EXTRA_BYTES (GC_all_interior_pointers? 1 : 0)
++#   define EXTRA_BYTES ((size_t)(GC_all_interior_pointers? 1 : 0))
+ # else
+-#   define EXTRA_BYTES GC_all_interior_pointers
++#   define EXTRA_BYTES (size_t)GC_all_interior_pointers
+ # endif
+ # define MAX_EXTRA_BYTES 1
+ #else
+@@ -731,6 +745,7 @@ GC_EXTERN GC_warn_proc GC_current_warn_p
+ # define LOG_HBLKSIZE   ((size_t)CPP_LOG_HBLKSIZE)
+ # define HBLKSIZE ((size_t)CPP_HBLKSIZE)
+ 
++#define GC_SQRT_SIZE_MAX ((((size_t)1) << (WORDSZ / 2)) - 1)
+ 
+ /*  Max size objects supported by freelist (larger objects are  */
+ /*  allocated directly with allchblk(), by rounding to the next */
+@@ -758,9 +773,12 @@ GC_EXTERN GC_warn_proc GC_current_warn_p
+ 
+ # define HBLKDISPL(objptr) (((size_t) (objptr)) & (HBLKSIZE-1))
+ 
++/* Round up allocation size (in bytes) to a multiple of a granule.      */
++#define ROUNDUP_GRANULE_SIZE(lb) /* lb should have no side-effect */ \
++            (SIZET_SAT_ADD(lb, GRANULE_BYTES - 1) & ~(GRANULE_BYTES - 1))
+ /* Round up byte allocation requests to integral number of words, etc. */
+-# define ROUNDED_UP_GRANULES(n) \
+-        BYTES_TO_GRANULES((n) + (GRANULE_BYTES - 1 + EXTRA_BYTES))
++# define ROUNDED_UP_GRANULES(lb) /* lb should have no side-effect */ \
++        BYTES_TO_GRANULES(SIZET_SAT_ADD(lb, GRANULE_BYTES - 1 + EXTRA_BYTES))
+ # if MAX_EXTRA_BYTES == 0
+ #  define SMALL_OBJ(bytes) EXPECT((bytes) <= (MAXOBJBYTES), TRUE)
+ # else
+@@ -770,7 +788,8 @@ GC_EXTERN GC_warn_proc GC_current_warn_p
+         /* This really just tests bytes <= MAXOBJBYTES - EXTRA_BYTES.   */
+         /* But we try to avoid looking up EXTRA_BYTES.                  */
+ # endif
+-# define ADD_SLOP(bytes) ((bytes) + EXTRA_BYTES)
++# define ADD_SLOP(lb) /* lb should have no side-effect */ \
++                SIZET_SAT_ADD(lb, EXTRA_BYTES)
+ # ifndef MIN_WORDS
+ #  define MIN_WORDS 2   /* FIXME: obsolete */
+ # endif
+@@ -985,9 +1004,11 @@ struct hblk {
+ 
+ # define HBLK_IS_FREE(hdr) (((hdr) -> hb_flags & FREE_BLK) != 0)
+ 
+-# define OBJ_SZ_TO_BLOCKS(sz) divHBLKSZ((sz) + HBLKSIZE-1)
++# define OBJ_SZ_TO_BLOCKS(lb) divHBLKSZ((lb) + HBLKSIZE-1)
++# define OBJ_SZ_TO_BLOCKS_CHECKED(lb) /* lb should have no side-effect */ \
++                                divHBLKSZ(SIZET_SAT_ADD(lb, HBLKSIZE - 1))
+     /* Size of block (in units of HBLKSIZE) needed to hold objects of   */
+-    /* given sz (in bytes).                                             */
++    /* given lb (in bytes).  The checked variant prevents wrap around.  */
+ 
+ /* Object free list link */
+ # define obj_link(p) (*(void  **)(p))
+@@ -1389,18 +1410,18 @@ GC_EXTERN word GC_n_heap_sects; /* Numbe
+                                 /* sections.                            */
+ #endif
+ 
+-GC_EXTERN word GC_page_size;
++GC_EXTERN size_t GC_page_size;
+ 
+ /* Round up allocation size to a multiple of a page size.       */
+ /* GC_setpagesize() is assumed to be already invoked.           */
+-#define ROUNDUP_PAGESIZE(bytes) \
+-                (((bytes) + GC_page_size - 1) & ~(GC_page_size - 1))
++#define ROUNDUP_PAGESIZE(lb) /* lb should have no side-effect */ \
++            (SIZET_SAT_ADD(lb, GC_page_size - 1) & ~(GC_page_size - 1))
+ 
+ /* Same as above but used to make GET_MEM() argument safe.      */
+ #ifdef MMAP_SUPPORTED
+-# define ROUNDUP_PAGESIZE_IF_MMAP(bytes) ROUNDUP_PAGESIZE(bytes)
++# define ROUNDUP_PAGESIZE_IF_MMAP(lb) ROUNDUP_PAGESIZE(lb)
+ #else
+-# define ROUNDUP_PAGESIZE_IF_MMAP(bytes) (bytes)
++# define ROUNDUP_PAGESIZE_IF_MMAP(lb) (lb)
+ #endif
+ 
+ #if defined(MSWIN32) || defined(MSWINCE) || defined(CYGWIN32)
+Index: libgc/include/private/gcconfig.h
+===================================================================
+--- libgc.orig/include/private/gcconfig.h
++++ libgc/include/private/gcconfig.h
+@@ -2936,7 +2936,8 @@
+         /* usually makes it possible to merge consecutively allocated   */
+         /* chunks.  It also avoids unintended recursion with            */
+         /* REDIRECT_MALLOC macro defined.                               */
+-        /* GET_MEM() returns a HLKSIZE aligned chunk.                   */
++        /* GET_MEM() argument should be of size_t type and have         */
++        /* no side-effect.  GET_MEM() returns HLKSIZE-aligned chunk;    */
+         /* 0 is taken to mean failure.                                  */
+         /* In case of MMAP_SUPPORTED, the argument must also be         */
+         /* a multiple of a physical page size.                          */
+@@ -2946,45 +2947,52 @@
+         struct hblk;    /* See gc_priv.h.       */
+ # if defined(PCR)
+     char * real_malloc(size_t bytes);
+-#   define GET_MEM(bytes) HBLKPTR(real_malloc((size_t)(bytes) + GC_page_size) \
++#   define GET_MEM(bytes) HBLKPTR(real_malloc(SIZET_SAT_ADD(bytes, \
++                                                            GC_page_size)) \
+                                           + GC_page_size-1)
+ # elif defined(OS2)
+     void * os2_alloc(size_t bytes);
+-#   define GET_MEM(bytes) HBLKPTR((ptr_t)os2_alloc((size_t)(bytes) \
+-                                            + GC_page_size) + GC_page_size-1)
++#   define GET_MEM(bytes) HBLKPTR((ptr_t)os2_alloc( \
++                                            SIZET_SAT_ADD(bytes, \
++                                                          GC_page_size)) \
++                                  + GC_page_size-1)
+ # elif defined(NEXT) || defined(DOS4GW) || defined(NONSTOP) \
+         || (defined(AMIGA) && !defined(GC_AMIGA_FASTALLOC)) \
+         || (defined(SOLARIS) && !defined(USE_MMAP)) || defined(RTEMS) \
+         || defined(__CC_ARM)
+ #   define GET_MEM(bytes) HBLKPTR((size_t)calloc(1, \
+-                                            (size_t)(bytes) + GC_page_size) \
++                                            SIZET_SAT_ADD(bytes, \
++                                                          GC_page_size)) \
+                                   + GC_page_size - 1)
+ # elif defined(MSWIN32) || defined(CYGWIN32)
+-    ptr_t GC_win32_get_mem(GC_word bytes);
++    ptr_t GC_win32_get_mem(size_t bytes);
+ #   define GET_MEM(bytes) (struct hblk *)GC_win32_get_mem(bytes)
+ # elif defined(MACOS)
+ #   if defined(USE_TEMPORARY_MEMORY)
+       Ptr GC_MacTemporaryNewPtr(size_t size, Boolean clearMemory);
+-#     define GET_MEM(bytes) HBLKPTR( \
+-                        GC_MacTemporaryNewPtr((bytes) + GC_page_size, true) \
++#     define GET_MEM(bytes) HBLKPTR(GC_MacTemporaryNewPtr( \
++                                        SIZET_SAT_ADD(bytes, \
++                                                      GC_page_size), true) \
+                         + GC_page_size-1)
+ #   else
+-#     define GET_MEM(bytes) HBLKPTR(NewPtrClear((bytes) + GC_page_size) \
++#     define GET_MEM(bytes) HBLKPTR(NewPtrClear(SIZET_SAT_ADD(bytes, \
++                                                              GC_page_size)) \
+                                     + GC_page_size-1)
+ #   endif
+ # elif defined(MSWINCE)
+-    ptr_t GC_wince_get_mem(GC_word bytes);
++    ptr_t GC_wince_get_mem(size_t bytes);
+ #   define GET_MEM(bytes) (struct hblk *)GC_wince_get_mem(bytes)
+ # elif defined(AMIGA) && defined(GC_AMIGA_FASTALLOC)
+-    void *GC_amiga_get_mem(size_t size);
+-#   define GET_MEM(bytes) HBLKPTR((size_t) \
+-                          GC_amiga_get_mem((size_t)(bytes) + GC_page_size) \
++    void *GC_amiga_get_mem(size_t bytes);
++#   define GET_MEM(bytes) HBLKPTR((size_t)GC_amiga_get_mem( \
++                                            SIZET_SAT_ADD(bytes, \
++                                                          GC_page_size)) \
+                           + GC_page_size-1)
+ # elif defined(SN_TARGET_PS3)
+     void *ps3_get_mem(size_t size);
+ #   define GET_MEM(bytes) (struct hblk*)ps3_get_mem(bytes)
+ # else
+-    ptr_t GC_unix_get_mem(GC_word bytes);
++    ptr_t GC_unix_get_mem(size_t bytes);
+ #   define GET_MEM(bytes) (struct hblk *)GC_unix_get_mem(bytes)
+ # endif
+ #endif /* GC_PRIVATE_H */
+Index: libgc/malloc.c
+===================================================================
+--- libgc.orig/malloc.c
++++ libgc/malloc.c
+@@ -46,9 +46,8 @@ GC_INNER ptr_t GC_alloc_large(size_t lb,
+     ptr_t result;
+     GC_bool retry = FALSE;
+ 
+-    /* Round up to a multiple of a granule. */
+-      lb = (lb + GRANULE_BYTES - 1) & ~(GRANULE_BYTES - 1);
+-    n_blocks = OBJ_SZ_TO_BLOCKS(lb);
++    lb = ROUNDUP_GRANULE_SIZE(lb);
++    n_blocks = OBJ_SZ_TO_BLOCKS_CHECKED(lb);
+     if (!EXPECT(GC_is_initialized, TRUE)) GC_init();
+     /* Do our share of marking work */
+         if (GC_incremental && !GC_dont_gc)
+@@ -85,10 +84,11 @@ GC_INNER ptr_t GC_alloc_large(size_t lb,
+ STATIC ptr_t GC_alloc_large_and_clear(size_t lb, int k, unsigned flags)
+ {
+     ptr_t result = GC_alloc_large(lb, k, flags);
+-    word n_blocks = OBJ_SZ_TO_BLOCKS(lb);
+ 
+     if (0 == result) return 0;
+     if (GC_debugging_started || GC_obj_kinds[k].ok_init) {
++        word n_blocks = OBJ_SZ_TO_BLOCKS(lb);
++
+         /* Clear the whole block, in case of GC_realloc call. */
+         BZERO(result, n_blocks * HBLKSIZE);
+     }
+@@ -191,8 +191,6 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_
+ 
+         lg = ROUNDED_UP_GRANULES(lb);
+         lb_rounded = GRANULES_TO_BYTES(lg);
+-        if (lb_rounded < lb)
+-            return((*GC_get_oom_fn())(lb));
+         n_blocks = OBJ_SZ_TO_BLOCKS(lb_rounded);
+         init = GC_obj_kinds[k].ok_init;
+         LOCK();
+@@ -398,15 +396,6 @@ void * malloc(size_t lb)
+   }
+ #endif /* GC_LINUX_THREADS */
+ 
+-#include <limits.h>
+-#ifdef SIZE_MAX
+-# define GC_SIZE_MAX SIZE_MAX
+-#else
+-# define GC_SIZE_MAX (~(size_t)0)
+-#endif
+-
+-#define GC_SQRT_SIZE_MAX ((1U << (WORDSZ / 2)) - 1)
+-
+ void * calloc(size_t n, size_t lb)
+ {
+     if ((lb | n) > GC_SQRT_SIZE_MAX /* fast initial test */
+Index: libgc/mallocx.c
+===================================================================
+--- libgc.orig/mallocx.c
++++ libgc/mallocx.c
+@@ -176,8 +176,6 @@ GC_API GC_ATTR_MALLOC void * GC_CALL
+         return(GC_generic_malloc((word)lb, k));
+     lg = ROUNDED_UP_GRANULES(lb);
+     lb_rounded = GRANULES_TO_BYTES(lg);
+-    if (lb_rounded < lb)
+-        return((*GC_get_oom_fn())(lb));
+     n_blocks = OBJ_SZ_TO_BLOCKS(lb_rounded);
+     init = GC_obj_kinds[k].ok_init;
+     if (EXPECT(GC_have_errors, FALSE))
+@@ -434,9 +432,11 @@ GC_API void GC_CALL GC_generic_malloc_ma
+ GC_API GC_ATTR_MALLOC void * GC_CALL GC_malloc_many(size_t lb)
+ {
+     void *result;
+-    GC_generic_malloc_many((lb + EXTRA_BYTES + GRANULE_BYTES-1)
+-                           & ~(GRANULE_BYTES-1),
+-                           NORMAL, &result);
++    /* Add EXTRA_BYTES and round up to a multiple of a granule. */
++    lb = SIZET_SAT_ADD(lb, EXTRA_BYTES + GRANULE_BYTES - 1)
++            & ~(GRANULE_BYTES - 1);
++
++    GC_generic_malloc_many(lb, NORMAL, &result);
+     return result;
+ }
+ 
+@@ -460,7 +460,7 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_
+     }
+     /* We could also try to make sure that the real rounded-up object size */
+     /* is a multiple of align.  That would be correct up to HBLKSIZE.      */
+-    new_lb = lb + align - 1;
++    new_lb = SIZET_SAT_ADD(lb, align - 1);
+     result = GC_malloc(new_lb);
+             /* It is OK not to check result for NULL as in that case    */
+             /* GC_memalign returns NULL too since (0 + 0 % align) is 0. */
+Index: libgc/misc.c
+===================================================================
+--- libgc.orig/misc.c
++++ libgc/misc.c
+@@ -226,13 +226,13 @@ GC_API void GC_CALL GC_set_handle_fork(i
+ /* quantization algorithm (but we precompute it).                       */
+ STATIC void GC_init_size_map(void)
+ {
+-    int i;
++    size_t i;
+ 
+     /* Map size 0 to something bigger.                  */
+     /* This avoids problems at lower levels.            */
+       GC_size_map[0] = 1;
+     for (i = 1; i <= GRANULES_TO_BYTES(TINY_FREELISTS-1) - EXTRA_BYTES; i++) {
+-        GC_size_map[i] = (unsigned)ROUNDED_UP_GRANULES(i);
++        GC_size_map[i] = ROUNDED_UP_GRANULES(i);
+ #       ifndef _MSC_VER
+           GC_ASSERT(GC_size_map[i] < TINY_FREELISTS);
+           /* Seems to tickle bug in VC++ 2008 for AMD64 */
+@@ -678,7 +678,7 @@ GC_API void GC_CALL GC_get_heap_usage_sa
+       }
+       /* At this execution point, GC_setpagesize() and GC_init_win32()  */
+       /* must already be called (for GET_MEM() to work correctly).      */
+-      content = (char *)GET_MEM(ROUNDUP_PAGESIZE_IF_MMAP(len + 1));
++      content = (char *)GET_MEM(ROUNDUP_PAGESIZE_IF_MMAP((size_t)len + 1));
+       if (content == NULL) {
+         CloseHandle(hFile);
+         return; /* allocation failure */
+Index: libgc/os_dep.c
+===================================================================
+--- libgc.orig/os_dep.c
++++ libgc/os_dep.c
+@@ -683,7 +683,7 @@ struct o32_obj {
+ # endif /* OS/2 */
+ 
+ /* Find the page size */
+-GC_INNER word GC_page_size = 0;
++GC_INNER size_t GC_page_size = 0;
+ 
+ #if defined(MSWIN32) || defined(MSWINCE) || defined(CYGWIN32)
+ # ifndef VER_PLATFORM_WIN32_CE
+@@ -699,7 +699,7 @@ GC_INNER word GC_page_size = 0;
+   GC_INNER void GC_setpagesize(void)
+   {
+     GetSystemInfo(&GC_sysinfo);
+-    GC_page_size = GC_sysinfo.dwPageSize;
++    GC_page_size = (size_t)GC_sysinfo.dwPageSize;
+ #   if defined(MSWINCE) && !defined(_WIN32_WCE_EMULATION)
+       {
+         OSVERSIONINFO verInfo;
+@@ -790,7 +790,7 @@ GC_INNER word GC_page_size = 0;
+   GC_INNER void GC_setpagesize(void)
+   {
+ #   if defined(MPROTECT_VDB) || defined(PROC_VDB) || defined(USE_MMAP)
+-      GC_page_size = GETPAGESIZE();
++      GC_page_size = (size_t)GETPAGESIZE();
+       if (!GC_page_size) ABORT("getpagesize failed");
+ #   else
+       /* It's acceptable to fake it.    */
+@@ -2016,7 +2016,7 @@ void GC_register_data_segments(void)
+   extern char* GC_get_private_path_and_zero_file(void);
+ #endif
+ 
+-STATIC ptr_t GC_unix_mmap_get_mem(word bytes)
++STATIC ptr_t GC_unix_mmap_get_mem(size_t bytes)
+ {
+     void *result;
+     static ptr_t last_addr = HEAP_START;
+@@ -2055,7 +2055,7 @@ STATIC ptr_t GC_unix_mmap_get_mem(word b
+         /* Oops.  We got the end of the address space.  This isn't      */
+         /* usable by arbitrary C code, since one-past-end pointers      */
+         /* don't work, so we discard it and try again.                  */
+-        munmap(result, (size_t)(-GC_page_size) - (size_t)result);
++        munmap(result, ~GC_page_size - (size_t)result + 1);
+                         /* Leave last page mapped, so we can't repeat.  */
+         return GC_unix_mmap_get_mem(bytes);
+       }
+@@ -2071,13 +2071,13 @@ STATIC ptr_t GC_unix_mmap_get_mem(word b
+ # endif  /* MMAP_SUPPORTED */
+ 
+ #if defined(USE_MMAP)
+-  ptr_t GC_unix_get_mem(word bytes)
++  ptr_t GC_unix_get_mem(size_t bytes)
+   {
+     return GC_unix_mmap_get_mem(bytes);
+   }
+ #else /* !USE_MMAP */
+ 
+-STATIC ptr_t GC_unix_sbrk_get_mem(word bytes)
++STATIC ptr_t GC_unix_sbrk_get_mem(size_t bytes)
+ {
+   ptr_t result;
+ # ifdef IRIX5
+@@ -2094,7 +2094,7 @@ STATIC ptr_t GC_unix_sbrk_get_mem(word b
+         goto out;
+     }
+     if (lsbs != 0) {
+-        if((ptr_t)sbrk(GC_page_size - lsbs) == (ptr_t)(-1)) {
++        if((ptr_t)sbrk((SBRK_ARG_T)GC_page_size - lsbs) == (ptr_t)(-1)) {
+             result = 0;
+             goto out;
+         }
+@@ -2118,7 +2118,7 @@ STATIC ptr_t GC_unix_sbrk_get_mem(word b
+   return(result);
+ }
+ 
+-ptr_t GC_unix_get_mem(word bytes)
++ptr_t GC_unix_get_mem(size_t bytes)
+ {
+ # if defined(MMAP_SUPPORTED)
+     /* By default, we try both sbrk and mmap, in that order.    */
+@@ -2164,7 +2164,7 @@ void * os2_alloc(size_t bytes)
+ # endif /* OS2 */
+ 
+ #ifdef MSWINCE
+-  ptr_t GC_wince_get_mem(word bytes)
++  ptr_t GC_wince_get_mem(size_t bytes)
+   {
+     ptr_t result = 0; /* initialized to prevent warning. */
+     word i;
+@@ -2184,8 +2184,9 @@ void * os2_alloc(size_t bytes)
+ 
+     if (i == GC_n_heap_bases) {
+         /* Reserve more pages */
+-        word res_bytes = (bytes + GC_sysinfo.dwAllocationGranularity-1)
+-                         & ~(GC_sysinfo.dwAllocationGranularity-1);
++        size_t res_bytes =
++            SIZET_SAT_ADD(bytes, (size_t)GC_sysinfo.dwAllocationGranularity-1)
++            & ~((size_t)GC_sysinfo.dwAllocationGranularity-1);
+         /* If we ever support MPROTECT_VDB here, we will probably need to    */
+         /* ensure that res_bytes is strictly > bytes, so that VirtualProtect */
+         /* never spans regions.  It seems to be OK for a VirtualFree         */
+@@ -2235,7 +2236,7 @@ void * os2_alloc(size_t bytes)
+ #   define GC_mem_top_down 0
+ # endif /* !GC_USE_MEM_TOP_DOWN */
+ 
+-  ptr_t GC_win32_get_mem(word bytes)
++  ptr_t GC_win32_get_mem(size_t bytes)
+   {
+     ptr_t result;
+ 
+@@ -2247,8 +2248,8 @@ void * os2_alloc(size_t bytes)
+         /* VirtualAlloc doesn't like PAGE_EXECUTE_READWRITE.    */
+         /* There are also unconfirmed rumors of other           */
+         /* problems, so we dodge the issue.                     */
+-        result = (ptr_t) GlobalAlloc(0, bytes + HBLKSIZE);
+-        result = (ptr_t)(((word)result + HBLKSIZE - 1) & ~(HBLKSIZE-1));
++        result = (ptr_t)(((word)GlobalAlloc(0, SIZET_SAT_ADD(bytes, HBLKSIZE))
++                            + HBLKSIZE - 1) & ~(HBLKSIZE - 1));
+       } else
+ #   endif
+     /* else */ {
+@@ -2277,12 +2278,13 @@ void * os2_alloc(size_t bytes)
+         /* available.  Otherwise we waste resources or possibly */
+         /* cause VirtualAlloc to fail (observed in Windows 2000 */
+         /* SP2).                                                */
+-        result = (ptr_t) VirtualAlloc(NULL, bytes + VIRTUAL_ALLOC_PAD,
+-                                GetWriteWatch_alloc_flag
++        result = (ptr_t) VirtualAlloc(NULL,
++                            SIZET_SAT_ADD(bytes, VIRTUAL_ALLOC_PAD),
++                            GetWriteWatch_alloc_flag
+                                 | (MEM_COMMIT | MEM_RESERVE)
+                                 | GC_mem_top_down,
+-                                GC_pages_executable ? PAGE_EXECUTE_READWRITE :
+-                                                      PAGE_READWRITE);
++                            GC_pages_executable ? PAGE_EXECUTE_READWRITE :
++                                                  PAGE_READWRITE);
+ #       undef IGNORE_PAGES_EXECUTABLE
+     }
+ # endif /* USE_WINALLOC */
+@@ -3117,7 +3119,7 @@ GC_API GC_push_other_roots_proc GC_CALL
+         char * addr = (char *) (exc_info -> ExceptionRecord
+                                 -> ExceptionInformation[1]);
+ #   endif
+-    unsigned i;
++    size_t i;
+ 
+     if (SIG_OK && CODE_OK) {
+         register struct hblk * h =
+@@ -4295,7 +4297,7 @@ catch_exception_raise(mach_port_t except
+   kern_return_t r;
+   char *addr;
+   struct hblk *h;
+-  unsigned int i;
++  size_t i;
+   thread_state_flavor_t flavor = DARWIN_EXC_STATE;
+   mach_msg_type_number_t exc_state_count = DARWIN_EXC_STATE_COUNT;
+   DARWIN_EXC_STATE_T exc_state;
+Index: libgc/typd_mlc.c
+===================================================================
+--- libgc.orig/typd_mlc.c
++++ libgc/typd_mlc.c
+@@ -608,7 +608,7 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_
+     DCL_LOCK_STATE;
+ 
+     GC_ASSERT(GC_explicit_typing_initialized);
+-    lb += TYPD_EXTRA_BYTES;
++    lb = SIZET_SAT_ADD(lb, TYPD_EXTRA_BYTES);
+     if (SMALL_OBJ(lb)) {
+         GC_DBG_COLLECT_AT_MALLOC(lb);
+         lg = GC_size_map[lb];
+@@ -646,8 +646,8 @@ GC_API GC_ATTR_MALLOC void * GC_CALL
+     DCL_LOCK_STATE;
+ 
+     GC_ASSERT(GC_explicit_typing_initialized);
+-    lb += TYPD_EXTRA_BYTES;
+-    if( SMALL_OBJ(lb) ) {
++    lb = SIZET_SAT_ADD(lb, TYPD_EXTRA_BYTES);
++    if (SMALL_OBJ(lb)) {
+         GC_DBG_COLLECT_AT_MALLOC(lb);
+         lg = GC_size_map[lb];
+         opp = &(GC_eobjfreelist[lg]);
+@@ -675,15 +675,6 @@ GC_API GC_ATTR_MALLOC void * GC_CALL
+    return((void *) op);
+ }
+ 
+-#include <limits.h>
+-#ifdef SIZE_MAX
+-# define GC_SIZE_MAX SIZE_MAX
+-#else
+-# define GC_SIZE_MAX (~(size_t)0)
+-#endif
+-
+-#define GC_SQRT_SIZE_MAX ((((size_t)1) << (WORDSZ / 2)) - 1)
+-
+ GC_API GC_ATTR_MALLOC void * GC_CALL GC_calloc_explicitly_typed(size_t n,
+                                                         size_t lb, GC_descr d)
+ {
+@@ -708,10 +699,11 @@ GC_API GC_ATTR_MALLOC void * GC_CALL GC_
+         case SIMPLE:
+             return GC_malloc_explicitly_typed(lb, simple_descr);
+         case LEAF:
+-            lb += sizeof(struct LeafDescriptor) + TYPD_EXTRA_BYTES;
++            lb = SIZET_SAT_ADD(lb,
++                        sizeof(struct LeafDescriptor) + TYPD_EXTRA_BYTES);
+             break;
+         case COMPLEX:
+-            lb += TYPD_EXTRA_BYTES;
++            lb = SIZET_SAT_ADD(lb, TYPD_EXTRA_BYTES);
+             break;
+     }
+     if( SMALL_OBJ(lb) ) {

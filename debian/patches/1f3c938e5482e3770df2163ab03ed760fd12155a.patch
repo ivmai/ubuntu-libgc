@@ -1,0 +1,38 @@
+From 1f3c938e5482e3770df2163ab03ed760fd12155a Mon Sep 17 00:00:00 2001
+From: Ivan Maidanski <ivmai@mail.ru>
+Date: Tue, 27 Sep 2016 10:12:18 +0300
+Subject: [PATCH] Fix GC_collect_or_expand to prevent allocation size value
+ wrap-around
+
+Relates to issue #135 on Github.
+
+* alloc.c (GC_WORD_MAX): New macro.
+* alloc.c (GC_collect_or_expand): Limit blocks_to_get by
+GC_WORD_MAX / HBLKSIZE value (to avoid multiplication overflow in
+GC_expand_hp_inner).
+---
+ alloc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/alloc.c b/alloc.c
+index 946c464..894c798 100644
+--- a/alloc.c
++++ b/alloc.c
+@@ -1238,6 +1238,8 @@ GC_INNER unsigned GC_fail_count = 0;
+ static word last_fo_entries = 0;
+ static word last_bytes_finalized = 0;
+ 
++#define GC_WORD_MAX (~(word)0)
++
+ /* Collect or expand heap in an attempt make the indicated number of    */
+ /* free blocks available.  Should be called until the blocks are        */
+ /* available (setting retry value to TRUE unless this is the first call */
+@@ -1291,6 +1293,8 @@ GC_INNER GC_bool GC_collect_or_expand(word needed_blocks,
+       } else {
+         blocks_to_get = MAXHINCR;
+       }
++      if (blocks_to_get > divHBLKSZ(GC_WORD_MAX))
++        blocks_to_get = divHBLKSZ(GC_WORD_MAX);
+     }
+ 
+     if (!GC_expand_hp_inner(blocks_to_get)
