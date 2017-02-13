@@ -1,0 +1,22 @@
+Author: Steve Beattie <steve.beattie@canonical.com>
+Subject: Work around libgc test failure due to --std=gnu++14
+Bug-upstream: https://github.com/ivmai/bdwgc/issues/87
+
+The test_cpp test fails when compiled with GCC 6, as used in Ubuntu
+16.10 (yakkety) due to the change to use --std=gnu++14 by default in GCC
+6. This patch works around the issue by recompiling the test program
+using --std=gnu++98 (the old default); however, it's likely other C++
+programs that make use of libgc will have problems under GCC 6.
+
+Index: libgc-7.4.2/tests/tests.am
+===================================================================
+--- libgc-7.4.2.orig/tests/tests.am
++++ libgc-7.4.2/tests/tests.am
+@@ -96,6 +96,7 @@ if CPLUSPLUS
+ TESTS += test_cpp$(EXEEXT)
+ check_PROGRAMS += test_cpp
+ test_cpp_SOURCES = tests/test_cpp.cc
++test_cpp_CXXFLAGS = -std=gnu++98
+ if AVOID_CPP_LIB
+ test_cpp_LDADD = gc_cpp.o $(test_ldadd) $(CXXLIBS)
+ else
