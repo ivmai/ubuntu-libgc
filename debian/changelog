@@ -1,3 +1,20 @@
+libgc (1:7.4.2-8ubuntu0.1) yakkety-security; urgency=medium
+
+  * SECURITY UPDATE: multiple integer overflows leading to pointers to
+    memory zones smaller than requested size.
+    - d/p/CVE-2016-9427-1.patch: Fix calloc_explicitly_typed in case
+      of lb*n overflow.
+    - d/p/CVE-2016-9427-2.patch: Fix malloc routines to prevent size
+      value wrap-around of lb*n overflow.
+    - d/p/CVE-2016-9427-3.patch: Fix GC_collect_or_expand to prevent
+      allocation size value wrap-around
+    - d/p/CVE-2016-9427-test.patch: add test cases
+    - CVE-2016-9427
+  * d/p/workaround-gcc-6-gnu++14.patch: Work around libgc test failure
+    due to --std=gnu++14 (https://github.com/ivmai/bdwgc/issues/87)
+
+ -- Steve Beattie <sbeattie@ubuntu.com>  Mon, 13 Feb 2017 11:50:02 -0800
+
 libgc (1:7.4.2-8) unstable; urgency=medium
 
   * Fix symbols for nios (Closes: #822445), Thanks to Helmut for report
