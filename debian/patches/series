@@ -6,3 +6,8 @@
 enable-threads.diff
 allow-automake-1.13
 aarch64.diff
+CVE-2016-9427-test.patch
+CVE-2016-9427-prereq.patch
+CVE-2016-9427-1.patch
+CVE-2016-9427-2.patch
+CVE-2016-9427-3.patch

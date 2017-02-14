@@ -1,5 +1,6 @@
 Source: libgc
-Maintainer: Christoph Egger <christoph@debian.org>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Christoph Egger <christoph@debian.org>
 Section: libs
 Priority: standard
 Build-Depends: debhelper (>= 9),
