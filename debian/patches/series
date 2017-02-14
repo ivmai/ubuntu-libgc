@@ -6,3 +6,8 @@
 enable-threads.diff
 06-m68k-no-getcontext.diff
 CVE-2012-2673.patch
+CVE-2016-9427-test.patch
+CVE-2016-9427-prereq.patch
+CVE-2016-9427-1.patch
+CVE-2016-9427-2.patch
+CVE-2016-9427-3.patch
