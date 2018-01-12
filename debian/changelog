@@ -1,3 +1,11 @@
+libgc (1:7.4.2-8.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Import symbols for ia64 (Closes: #885908)
+  * Import symbols for sh3 (Closes: #851924)
+
+ -- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>  Fri, 12 Jan 2018 14:11:35 +0100
+
 libgc (1:7.4.2-8) unstable; urgency=medium
 
   * Fix symbols for nios (Closes: #822445), Thanks to Helmut for report
