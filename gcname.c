@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <gc.h>
+#include "version.h"
 
 int main()
 {

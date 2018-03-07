@@ -8,7 +8,10 @@
 #include <dirent.h>
 #endif /* __DJGPP__ */
 
-int main(int argc, char **argv, char **envp)
+int main(argc, argv, envp)
+int argc;
+char ** argv;
+char ** envp;
 {
     FILE * f;
 #ifdef __DJGPP__

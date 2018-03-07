@@ -37,11 +37,7 @@ few minutes to complete.
 #   include "gc_alloc.h"
 #endif
 extern "C" {
-# include "private/gcconfig.h"
-  GC_API void GC_printf(const char *format, ...);
-  /* Use GC private output to reach the same log file.  */
-  /* Don't include gc_priv.h, since that may include Windows system	*/
-  /* header files that don't take kindly to this context.		*/
+#include "private/gc_priv.h"
 }
 #ifdef MSWIN32
 #   include <windows.h>
@@ -56,7 +52,7 @@ extern "C" {
 
 #define my_assert( e ) \
     if (! (e)) { \
-        GC_printf( "Assertion failure in " __FILE__ ", line %d: " #e "\n", \
+        GC_printf1( "Assertion failure in " __FILE__ ", line %d: " #e "\n", \
                     __LINE__ ); \
         exit( 1 ); }
 
@@ -123,7 +119,7 @@ class D: public gc {public:
     static void CleanUp( void* obj, void* data ) {
         D* self = (D*) obj;
         nFreed++;
-        my_assert( self->i == (int) (GC_word) data );}
+        my_assert( self->i == (int) (long) data );}
     static void Test() {
         my_assert( nFreed >= .8 * nAllocated );}
        
@@ -170,10 +166,10 @@ int F::nFreed = 0;
 int F::nAllocated = 0;
    
 
-GC_word Disguise( void* p ) {
-    return ~ (GC_word) p;}
+long Disguise( void* p ) {
+    return ~ (long) p;}
 
-void* Undisguise( GC_word i ) {
+void* Undisguise( long i ) {
     return (void*) ~ i;}
 
 
@@ -220,17 +216,17 @@ int APIENTRY WinMain(
       x = 0;
 #   endif
     if (argc != 2 || (0 >= (n = atoi( argv[ 1 ] )))) {
-        GC_printf( "usage: test_cpp number-of-iterations\nAssuming 10 iters\n" );
+        GC_printf0( "usage: test_cpp number-of-iterations\nAssuming 10 iters\n" );
         n = 10;}
         
     for (iters = 1; iters <= n; iters++) {
-        GC_printf( "Starting iteration %d\n", iters );
+        GC_printf1( "Starting iteration %d\n", iters );
 
             /* Allocate some uncollectable As and disguise their pointers.
             Later we'll check to see if the objects are still there.  We're
             checking to make sure these objects really are uncollectable. */
-        GC_word as[ 1000 ];
-        GC_word bs[ 1000 ];
+        long as[ 1000 ];
+        long bs[ 1000 ];
         for (i = 0; i < 1000; i++) {
             as[ i ] = Disguise( new (NoGC) A( i ) );
             bs[ i ] = Disguise( new (NoGC) B( i ) );}
@@ -240,7 +236,7 @@ int APIENTRY WinMain(
         for (i = 0; i < 1000; i++) {
             C* c = new C( 2 );
             C c1( 2 );           /* stack allocation should work too */
-            D* d = ::new (USE_GC, D::CleanUp, (void*)(GC_word)i) D( i );
+            D* d = ::new (USE_GC, D::CleanUp, (void*)(long)i) D( i );
             F* f = new F;
             if (0 == i % 10) delete c;}
 
@@ -286,7 +282,7 @@ int APIENTRY WinMain(
       x = *xptr;
 #   endif
     my_assert (29 == x[0]);
-    GC_printf( "The test appears to have succeeded.\n" );
+    GC_printf0( "The test appears to have succeeded.\n" );
     return( 0 );}
     
 

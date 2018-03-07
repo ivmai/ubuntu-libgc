@@ -11,20 +11,16 @@
  * modified is included with the above copyright notice.
  */
 
-#include "private/gc_priv.h"	/* For configuration, pthreads.h. */
-#include "private/thread_local_alloc.h"
-				/* To determine type of tsd impl. */
-				/* Includes private/specific.h	  */
-				/* if needed.			  */
+#include "private/gc_priv.h" /* For GC_compare_and_exchange, GC_memory_barrier */
 
-#if defined(USE_CUSTOM_SPECIFIC)
+#if defined(GC_LINUX_THREADS)
 
-#include "atomic_ops.h"
+#include "private/specific.h"
 
 static tse invalid_tse = {INVALID_QTID, 0, 0, INVALID_THREADID};
-			/* A thread-specific data entry which will never    */
-			/* appear valid to a reader.  Used to fill in empty */
-			/* cache entries to avoid a check for 0.	    */
+			/* A thread-specific data entry which will never	*/
+			/* appear valid to a reader.  Used to fill in empty	*/
+			/* cache entries to avoid a check for 0.		*/
 
 int PREFIXED(key_create) (tsd ** key_ptr, void (* destructor)(void *)) {
     int i;
@@ -61,7 +57,7 @@ int PREFIXED(setspecific) (tsd * key, void * value) {
     GC_ASSERT(entry -> qtid == INVALID_QTID);
     /* There can only be one writer at a time, but this needs to be	*/
     /* atomic with respect to concurrent readers.			*/ 
-    AO_store_release((volatile AO_t *)(key -> hash + hash_val), (AO_t)entry);
+    *(volatile tse **)(key -> hash + hash_val) = entry;
     pthread_mutex_unlock(&(key -> lock));
     return 0;
 }
@@ -129,37 +125,4 @@ void *  PREFIXED(slow_getspecific) (tsd * key, unsigned long qtid,
     return entry -> value;
 }
 
-#ifdef GC_ASSERTIONS
-
-/* Check that that all elements of the data structure associated 	*/
-/* with key are marked.							*/
-void PREFIXED(check_tsd_marks) (tsd *key)
-{
-    int i;
-    tse *p;
-
-    if (!GC_is_marked(GC_base(key))) {
-	ABORT("Unmarked thread-specific-data table");
-    }
-    for (i = 0; i < TS_HASH_SIZE; ++i) {
-        for (p = key -> hash[i]; p != 0; p = p -> next) {
-	    if (!GC_is_marked(GC_base(p))) {
-		GC_err_printf(
-			"Thread-specific-data entry at %p not marked\n",p);
-		ABORT("Unmarked tse");
-	    }
-	}
-    }
-    for (i = 0; i < TS_CACHE_SIZE; ++i) {
-        p = key -> cache[i];
-	if (p != &invalid_tse && !GC_is_marked(GC_base(p))) {
-	    GC_err_printf(
-		"Cached thread-specific-data entry at %p not marked\n",p);
-	    ABORT("Unmarked cached tse");
-	}
-    }
-}
-
-#endif
-
-#endif /* USE_CUSTOM_SPECIFIC */
+#endif /* GC_LINUX_THREADS */

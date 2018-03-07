@@ -23,9 +23,14 @@
 # define PCR_NO_RENAME
 # include <stdlib.h>
 
-void * real_malloc(size_t size)
+# ifdef __STDC__
+    char * real_malloc(size_t size)
+# else 
+    char * real_malloc()
+    int size;
+# endif
 {
-    return(malloc(size));
+    return((char *)malloc(size));
 }
 #endif /* PCR */
 

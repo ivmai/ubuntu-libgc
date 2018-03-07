@@ -25,7 +25,7 @@
 
 #include "private/gc_priv.h"
 
-# if (defined(GC_PTHREADS) && !defined(GC_DARWIN_THREADS)) && !defined(GC_WIN32_PTHREADS)\
+# if (defined(GC_PTHREADS) && !defined(GC_DARWIN_THREADS)) \
       || defined(GC_SOLARIS_THREADS)
 
 # if defined(dlopen) && !defined(GC_USE_LD_WRAP)
@@ -65,7 +65,9 @@
 #ifdef GC_USE_LD_WRAP
   void * __wrap_dlopen(const char *path, int mode)
 #else
-  void * GC_dlopen(const char *path, int mode)
+  void * GC_dlopen(path, mode)
+  GC_CONST char * path;
+  int mode;
 #endif
 {
     void * result;
