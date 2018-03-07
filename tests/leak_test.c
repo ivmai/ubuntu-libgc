@@ -1,13 +1,10 @@
 #include "leak_detector.h"
 
-int main(void) {
+main() {
     int *p[10];
     int i;
-    GC_set_find_leak(1); /* for new collect versions not compiled       */
-                         /* with -DFIND_LEAK.                           */
-
-    GC_INIT();  /* Needed if thread-local allocation is enabled.        */
-                /* FIXME: This is not ideal.                            */
+    GC_find_leak = 1; /* for new collect versions not compiled  */
+    /* with -DFIND_LEAK.                                        */
     for (i = 0; i < 10; ++i) {
         p[i] = malloc(sizeof(int)+i);
     }
@@ -21,5 +18,4 @@ int main(void) {
     CHECK_LEAKS();
     CHECK_LEAKS();
     CHECK_LEAKS();
-    return 0;
-}
+}       
