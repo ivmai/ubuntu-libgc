@@ -87,6 +87,12 @@
 #  endif
 #endif
 
+#if (defined(NETBSD) || defined(OPENBSD)) && defined(__ELF__) \
+    && !defined(NEED_FIND_LIMIT)
+   /* Used by GC_init_netbsd_elf() below.	*/
+#  define NEED_FIND_LIMIT
+#endif
+
 #ifdef NEED_FIND_LIMIT
 #   include <setjmp.h>
 #endif
@@ -111,7 +117,10 @@
 # include <sys/uio.h>
 # include <malloc.h>   /* for locking */
 #endif
-#ifdef USE_MMAP
+#if defined(USE_MMAP) || defined(USE_MUNMAP)
+# ifndef USE_MMAP
+    --> USE_MUNMAP requires USE_MMAP
+# endif
 # include <sys/types.h>
 # include <sys/mman.h>
 # include <sys/stat.h>
@@ -120,7 +129,7 @@
 
 #ifdef UNIX_LIKE
 # include <fcntl.h>
-# ifdef SUNOS5SIGS
+# if defined(SUNOS5SIGS) && !defined(FREEBSD)
 #  include <sys/siginfo.h>
 # endif
   /* Define SETJMP and friends to be the version that restores	*/
@@ -710,16 +719,12 @@ ptr_t GC_get_stack_base()
 	  struct sigaction	act;
 
 	  act.sa_handler	= h;
-#	  if defined(SUNOS5SIGS) || defined(NETBSD)
+#	  if 0 /* Was necessary for Solaris 2.3 and very temporary 	*/
+	       /* NetBSD bugs.						*/
             act.sa_flags          = SA_RESTART | SA_NODEFER;
 #         else
             act.sa_flags          = SA_RESTART;
 #	  endif
-          /* The presence of SA_NODEFER represents yet another gross    */
-          /* hack.  Under Solaris 2.3, siglongjmp doesn't appear to     */
-          /* interact correctly with -lthread.  We hide the confusion   */
-          /* by making sure that signal handling doesn't affect the     */
-          /* signal mask.                                               */
 
 	  (void) sigemptyset(&act.sa_mask);
 #	  ifdef GC_IRIX_THREADS
@@ -749,7 +754,7 @@ ptr_t GC_get_stack_base()
 # ifdef NEED_FIND_LIMIT
   /* Some tools to implement HEURISTIC2	*/
 #   define MIN_PAGE_SIZE 256	/* Smallest conceivable page size, bytes */
-    /* static */ jmp_buf GC_jmp_buf;
+    /* static */ JMP_BUF GC_jmp_buf;
     
     /*ARGSUSED*/
     void GC_fault_handler(sig)
@@ -927,7 +932,11 @@ ptr_t GC_get_stack_base()
     size_t i, buf_offset = 0;
 
     /* First try the easy way.  This should work for glibc 2.2	*/
-      if (0 != &__libc_stack_end) {
+    /* This fails in a prelinked ("prelink" command) executable */
+    /* since the correct value of __libc_stack_end never	*/
+    /* becomes visible to us.  The second test works around 	*/
+    /* this.							*/  
+      if (0 != &__libc_stack_end && 0 != __libc_stack_end ) {
 #       ifdef IA64
 	  /* Some versions of glibc set the address 16 bytes too	*/
 	  /* low while the initialization code is running.		*/
@@ -1521,8 +1530,7 @@ word bytes;
 
 #else  /* Not RS6000 */
 
-#if defined(USE_MMAP)
-/* Tested only under Linux, IRIX5 and Solaris 2 */
+#if defined(USE_MMAP) || defined(USE_MUNMAP)
 
 #ifdef USE_MMAP_FIXED
 #   define GC_MMAP_FLAGS MAP_FIXED | MAP_PRIVATE
@@ -1530,10 +1538,6 @@ word bytes;
 	/* be unreliable if something is already mapped at the address.	*/
 #else
 #   define GC_MMAP_FLAGS MAP_PRIVATE
-#endif
-
-#ifndef HEAP_START
-#   define HEAP_START 0
 #endif
 
 #ifdef USE_MMAP_ANON
@@ -1547,6 +1551,15 @@ word bytes;
   static int zero_fd;
 # define OPT_MAP_ANON 0
 #endif 
+
+#endif /* defined(USE_MMAP) || defined(USE_MUNMAP) */
+
+#if defined(USE_MMAP)
+/* Tested only under Linux, IRIX5 and Solaris 2 */
+
+#ifndef HEAP_START
+#   define HEAP_START 0
+#endif
 
 ptr_t GC_unix_get_mem(bytes)
 word bytes;
@@ -2179,7 +2192,7 @@ GC_bool is_ptrfree;
     /* Using vm_protect (mach syscall) over mprotect (BSD syscall) seems to
        decrease the likelihood of some of the problems described below. */
     #include <mach/vm_map.h>
-    extern mach_port_t GC_task_self;
+    static mach_port_t GC_task_self;
     #define PROTECT(addr,len) \
         if(vm_protect(GC_task_self,(vm_address_t)(addr),(vm_size_t)(len), \
                 FALSE,VM_PROT_READ) != KERN_SUCCESS) { \
@@ -2212,9 +2225,9 @@ GC_bool is_ptrfree;
 # endif /* !DARWIN */
 # endif /* MSWIN32 || MSWINCE || DARWIN */
 
-#if defined(SUNOS4) || defined(FREEBSD)
+#if defined(SUNOS4) || (defined(FREEBSD) && !defined(SUNOS5SIGS))
     typedef void (* SIG_PF)();
-#endif /* SUNOS4 || FREEBSD */
+#endif /* SUNOS4 || (FREEBSD && !SUNOS5SIGS) */
 
 #if defined(SUNOS5SIGS) || defined(OSF1) || defined(LINUX) \
     || defined(HURD)
@@ -2241,13 +2254,13 @@ GC_bool is_ptrfree;
 #endif /* IRIX5 || OSF1 || HURD */
 
 #if defined(SUNOS5SIGS)
-# ifdef HPUX
-#   define SIGINFO __siginfo
+# if defined(HPUX) || defined(FREEBSD)
+#   define SIGINFO_T siginfo_t
 # else
-#   define SIGINFO siginfo
+#   define SIGINFO_T struct siginfo
 # endif
 # ifdef __STDC__
-    typedef void (* REAL_SIG_PF)(int, struct SIGINFO *, void *);
+    typedef void (* REAL_SIG_PF)(int, SIGINFO_T *, void *);
 # else
     typedef void (* REAL_SIG_PF)();
 # endif
@@ -2267,8 +2280,11 @@ GC_bool is_ptrfree;
 #   if defined(ALPHA) || defined(M68K)
       typedef void (* REAL_SIG_PF)(int, int, s_c *);
 #   else
-#     if defined(IA64) || defined(HP_PA)
+#     if defined(IA64) || defined(HP_PA) || defined(X86_64)
         typedef void (* REAL_SIG_PF)(int, siginfo_t *, s_c *);
+	/* FIXME:						  */
+	/* According to SUSV3, the last argument should have type */
+	/* void * or ucontext_t *				  */
 #     else
         typedef void (* REAL_SIG_PF)(int, s_c);
 #     endif
@@ -2343,7 +2359,7 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 
 /*ARGSUSED*/
 #if !defined(DARWIN)
-# if defined (SUNOS4) || defined(FREEBSD)
+# if defined (SUNOS4) || (defined(FREEBSD) && !defined(SUNOS5SIGS))
     void GC_write_fault_handler(sig, code, scp, addr)
     int sig, code;
     struct sigcontext *scp;
@@ -2358,7 +2374,7 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 #     define SIG_OK (sig == SIGBUS)
 #     define CODE_OK (code == BUS_PAGE_FAULT)
 #   endif
-# endif /* SUNOS4 || FREEBSD */
+# endif /* SUNOS4 || (FREEBSD && !SUNOS5SIGS) */
 
 # if defined(IRIX5) || defined(OSF1) || defined(HURD)
 #   include <errno.h>
@@ -2381,7 +2397,7 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 #   if defined(ALPHA) || defined(M68K)
       void GC_write_fault_handler(int sig, int code, s_c * sc)
 #   else
-#     if defined(IA64) || defined(HP_PA)
+#     if defined(IA64) || defined(HP_PA) || defined(X86_64)
         void GC_write_fault_handler(int sig, siginfo_t * si, s_c * scp)
 #     else
 #       if defined(ARM32)
@@ -2400,11 +2416,11 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 
 # if defined(SUNOS5SIGS)
 #  ifdef __STDC__
-    void GC_write_fault_handler(int sig, struct SIGINFO *scp, void * context)
+    void GC_write_fault_handler(int sig, SIGINFO_T *scp, void * context)
 #  else
     void GC_write_fault_handler(sig, scp, context)
     int sig;
-    struct SIGINFO *scp;
+    SIGINFO_T *scp;
     void * context;
 #  endif
 #   ifdef HPUX
@@ -2415,9 +2431,14 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 		     || (scp -> si_code == SEGV_UNKNOWN) \
 		     || (scp -> si_code == BUS_OBJERR)
 #   else
-#     define SIG_OK (sig == SIGSEGV)
-#     define CODE_OK (scp -> si_code == SEGV_ACCERR)
-#   endif
+#     ifdef FREEBSD
+#       define SIG_OK (sig == SIGBUS)
+#       define CODE_OK (scp -> si_code == BUS_PAGE_FAULT)
+#     else
+#       define SIG_OK (sig == SIGSEGV)
+#       define CODE_OK (scp -> si_code == SEGV_ACCERR)
+#     endif
+#   endif    
 # endif /* SUNOS5SIGS */
 
 # if defined(MSWIN32) || defined(MSWINCE)
@@ -2442,7 +2463,7 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 	char * addr = (char *) (scp -> si_addr);
 #   endif
 #   ifdef LINUX
-#     if defined(I386) || defined (X86_64)
+#     if defined(I386)
 	char * addr = (char *) (sc.cr2);
 #     else
 #	if defined(M68K)
@@ -2477,7 +2498,7 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 #	  ifdef ALPHA
             char * addr = get_fault_addr(sc);
 #	  else
-#	    if defined(IA64) || defined(HP_PA)
+#	    if defined(IA64) || defined(HP_PA) || defined(X86_64)
 	      char * addr = si -> si_addr;
 	      /* I believe this is claimed to work on all platforms for	*/
 	      /* Linux 2.3.47 and later.  Hopefully we don't have to	*/
@@ -2520,6 +2541,10 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 	    in_allocd_block = (HDR(addr) != 0);
 #	endif
         if (!in_allocd_block) {
+	    /* FIXME - We should make sure that we invoke the	*/
+	    /* old handler with the appropriate calling 	*/
+	    /* sequence, which often depends on SA_SIGINFO.	*/
+
 	    /* Heap blocks now begin and end on page boundaries */
             SIG_PF old_handler;
             
@@ -2536,11 +2561,17 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 		    return(EXCEPTION_CONTINUE_SEARCH);
 #		endif
             } else {
-#		if defined (SUNOS4) || defined(FREEBSD)
+#		if defined (SUNOS4) \
+                    || (defined(FREEBSD) && !defined(SUNOS5SIGS))
 		    (*old_handler) (sig, code, scp, addr);
 		    return;
 #		endif
 #		if defined (SUNOS5SIGS)
+                    /*
+                     * FIXME: For FreeBSD, this code should check if the 
+                     * old signal handler used the traditional BSD style and
+                     * if so call it using that style.
+                     */
 		    (*(REAL_SIG_PF)old_handler) (sig, scp, context);
 		    return;
 #		endif
@@ -2548,7 +2579,7 @@ SIG_PF GC_old_segv_handler;	/* Also old MSWIN32 ACCESS_VIOLATION filter */
 #		    if defined(ALPHA) || defined(M68K)
 		        (*(REAL_SIG_PF)old_handler) (sig, code, sc);
 #		    else 
-#		      if defined(IA64) || defined(HP_PA)
+#		      if defined(IA64) || defined(HP_PA) || defined(X86_64)
 		        (*(REAL_SIG_PF)old_handler) (sig, si, scp);
 #		      else
 		        (*(REAL_SIG_PF)old_handler) (sig, sc);
@@ -2642,7 +2673,8 @@ void GC_dirty_init()
       struct sigaction	act, oldact;
       /* We should probably specify SA_SIGINFO for Linux, and handle 	*/
       /* the different architectures more uniformly.			*/
-#     if defined(IRIX5) || defined(LINUX) || defined(OSF1) || defined(HURD)
+#     if defined(IRIX5) || defined(LINUX) && !defined(X86_64) \
+	 || defined(OSF1) || defined(HURD)
     	act.sa_flags	= SA_RESTART;
         act.sa_handler  = (SIG_PF)GC_write_fault_handler;
 #     else
@@ -2665,7 +2697,7 @@ void GC_dirty_init()
         GC_err_printf0("Page size not multiple of HBLKSIZE\n");
         ABORT("Page size not multiple of HBLKSIZE");
     }
-#   if defined(SUNOS4) || defined(FREEBSD)
+#   if defined(SUNOS4) || (defined(FREEBSD) && !defined(SUNOS5SIGS))
       GC_old_bus_handler = signal(SIGBUS, GC_write_fault_handler);
       if (GC_old_bus_handler == SIG_IGN) {
         GC_err_printf0("Previously ignored bus error!?");
@@ -2689,13 +2721,13 @@ void GC_dirty_init()
 #	endif
       }
 #   endif
-#   if defined(SUNOS5SIGS) || defined(IRIX5) || defined(LINUX) \
-       || defined(OSF1) || defined(HURD)
+#   if (defined(SUNOS5SIGS) && !defined(FREEBSD)) || defined(IRIX5) \
+       || defined(LINUX) || defined(OSF1) || defined(HURD)
       /* SUNOS5SIGS includes HPUX */
 #     if defined(GC_IRIX_THREADS)
       	sigaction(SIGSEGV, 0, &oldact);
       	sigaction(SIGSEGV, &act, 0);
-#     else
+#     else 
 	{
 	  int res = sigaction(SIGSEGV, &act, &oldact);
 	  if (res != 0) ABORT("Sigaction failed");
@@ -2721,8 +2753,9 @@ void GC_dirty_init()
 	  GC_err_printf0("Replaced other SIGSEGV handler\n");
 #       endif
       }
-#   endif
-#   if defined(HPUX) || defined(LINUX) || defined(HURD)
+#   endif /* (SUNOS5SIGS && !FREEBSD) || IRIX5 || LINUX || OSF1 || HURD */
+#   if defined(HPUX) || defined(LINUX) || defined(HURD) \
+      || (defined(FREEBSD) && defined(SUNOS5SIGS))
       sigaction(SIGBUS, &act, &oldact);
       GC_old_bus_handler = oldact.sa_handler;
       if (GC_old_bus_handler == SIG_IGN) {
@@ -2734,7 +2767,7 @@ void GC_dirty_init()
 	  GC_err_printf0("Replaced other SIGBUS handler\n");
 #       endif
       }
-#   endif /* HPUX || LINUX || HURD */
+#   endif /* HPUX || LINUX || HURD || (FREEBSD && SUNOS5SIGS) */
 #   if defined(MSWIN32)
       GC_old_segv_handler = SetUnhandledExceptionFilter(GC_write_fault_handler);
       if (GC_old_segv_handler != NULL) {
@@ -3019,7 +3052,7 @@ word n;
 #include <sys/procfs.h>
 #include <sys/stat.h>
 
-#define INITIAL_BUF_SZ 4096
+#define INITIAL_BUF_SZ 16384
 word GC_proc_buf_size = INITIAL_BUF_SZ;
 char *GC_proc_buf;
 
@@ -3133,7 +3166,7 @@ int dummy;
                 GC_proc_buf = bufp = new_buf;
                 GC_proc_buf_size = new_size;
             }
-            if (syscall(SYS_read, GC_proc_fd, bufp, GC_proc_buf_size) <= 0) {
+            if (READ(GC_proc_fd, bufp, GC_proc_buf_size) <= 0) {
                 WARN("Insufficient space for /proc read\n", 0);
                 /* Punt:	*/
         	memset(GC_grungy_pages, 0xff, sizeof (page_hash_table));
@@ -3353,8 +3386,6 @@ extern kern_return_t exception_raise_state_identity(
 
 
 #define MAX_EXCEPTION_PORTS 16
-
-static mach_port_t GC_task_self;
 
 static struct {
     mach_msg_type_number_t count;
@@ -3932,12 +3963,14 @@ kern_return_t catch_exception_raise_state_identity(
 
 #endif /* NEED_CALLINFO */
 
+#if defined(GC_HAVE_BUILTIN_BACKTRACE)
+# include <execinfo.h>
+#endif
+
 #ifdef SAVE_CALL_CHAIN
 
 #if NARGS == 0 && NFRAMES % 2 == 0 /* No padding */ \
     && defined(GC_HAVE_BUILTIN_BACKTRACE)
-
-#include <execinfo.h>
 
 void GC_save_callers (info) 
 struct callinfo info[NFRAMES];
@@ -4014,6 +4047,8 @@ struct callinfo info[NFRAMES];
     static int reentry_count = 0;
     GC_bool stop = FALSE;
 
+    /* FIXME: This should probably use a different lock, so that we	*/
+    /* become callable with or without the allocation lock.		*/
     LOCK();
       ++reentry_count;
     UNLOCK();
@@ -4048,7 +4083,8 @@ struct callinfo info[NFRAMES];
 #	  ifdef LINUX
 	    FILE *pipe;
 #	  endif
-#	  if defined(GC_HAVE_BUILTIN_BACKTRACE)
+#	  if defined(GC_HAVE_BUILTIN_BACKTRACE) \
+	     && !defined(GC_BACKTRACE_SYMBOLS_BROKEN)
 	    char **sym_name =
 	      backtrace_symbols((void **)(&(info[i].ci_pc)), 1);
 	    char *name = sym_name[0];
@@ -4141,7 +4177,8 @@ struct callinfo info[NFRAMES];
 	    }
 #	  endif /* LINUX */
 	  GC_err_printf1("\t\t%s\n", name);
-#	  if defined(GC_HAVE_BUILTIN_BACKTRACE)
+#	  if defined(GC_HAVE_BUILTIN_BACKTRACE) \
+	     && !defined(GC_BACKTRACE_SYMBOLS_BROKEN)
 	    free(sym_name);  /* May call GC_free; that's OK */
 #         endif
 	}
