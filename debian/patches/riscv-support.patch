@@ -1,0 +1,72 @@
+From 4f7f0eebd24dcde9f2b3ec2cb98913fc39bbdda3 Mon Sep 17 00:00:00 2001
+From: Shea Levy <shea@shealevy.com>
+Date: Sun, 18 Feb 2018 01:37:12 -0500
+Subject: [PATCH] Add initial RISC-V support
+
+Issue #208 (bdwgc).
+
+* include/private/gcconfig.h [__riscv && LINUX && __riscv_xlen==32]
+(RISCV32, mach_type_known): Define macro.
+* include/private/gcconfig.h [__riscv && LINUX && __riscv_xlen==64]
+(RISCV64, mach_type_known): Define macro.
+* include/private/gcconfig.h [RISCV32 || RISCV64] (CPP_WORDSZ,
+MACH_TYPE, ALIGNMENT): Likewise.
+* include/private/gcconfig.h [(RISCV32 || RISCV64) && LINUX] (OS_TYPE,
+DATASTART, LINUX_STACKBOTTOM, DYNAMIC_LOADING): Likewise.
+* include/private/gcconfig.h [(RISCV32 || RISCV64) && LINUX]
+(__data_start): Declare external variable.
+---
+ include/private/gcconfig.h | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+--- a/include/private/gcconfig.h
++++ b/include/private/gcconfig.h
+@@ -557,6 +557,15 @@
+ # if defined(SYMBIAN)
+ #   define mach_type_known
+ # endif
++# if defined(__riscv) && defined(LINUX)
++#   if __riscv_xlen == 32
++#     define RISCV32
++#     define mach_type_known
++#   elif __riscv_xlen == 64
++#     define RISCV64
++#     define mach_type_known
++#   endif
++# endif
+ 
+ /* Feel free to add more clauses here */
+ 
+@@ -2398,6 +2407,32 @@
+ #   endif
+ # endif
+ 
++# ifdef RISCV32
++#   define CPP_WORDSZ 32
++#   define MACH_TYPE "RISC-V32"
++#   define ALIGNMENT 4
++#   ifdef LINUX
++#     define OS_TYPE "LINUX"
++      extern int __data_start[];
++#     define DATASTART ((ptr_t)__data_start)
++#     define LINUX_STACKBOTTOM
++#     define DYNAMIC_LOADING
++#   endif
++# endif /* RISCV32 */
++
++# ifdef RISCV64
++#   define CPP_WORDSZ 64
++#   define MACH_TYPE "RISC-V64"
++#   define ALIGNMENT 8
++#   ifdef LINUX
++#     define OS_TYPE "LINUX"
++      extern int __data_start[];
++#     define DATASTART ((ptr_t)__data_start)
++#     define LINUX_STACKBOTTOM
++#     define DYNAMIC_LOADING
++#   endif
++# endif /* RISCV64 */
++
+ #if defined(__GLIBC__) && !defined(DONT_USE_LIBC_PRIVATES)
+   /* Use glibc's stack-end marker. */
+ # define USE_LIBC_PRIVATES

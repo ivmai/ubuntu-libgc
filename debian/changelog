@@ -1,3 +1,14 @@
+libgc (1:7.4.2-8.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Add support for the riscv64 architecture (Closes: #891382)
+    - debian/patches/riscv-support.patch
+      + commit 4f7f0eebd24dcde9f2b3ec2cb98913fc39bbdda3 from upstream's
+        repository, refreshed to un-fuzz
+    - Update symbols file
+
+ -- Manuel A. Fernandez Montecelo <mafm@debian.org>  Sat, 17 Mar 2018 00:06:37 +0100
+
 libgc (1:7.4.2-8.1) unstable; urgency=medium
 
   * Non-maintainer upload.
