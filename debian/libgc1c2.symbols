@@ -2,7 +2,6 @@
 libgc.so.1 libgc1c2 #MINVER#
  (arch=armel)AO_compare_double_and_swap_double_emulation@Base 1:7.4.2
  (arch=armel)AO_fetch_compare_and_swap_emulation@Base 1:7.4.2
- (arch=armel)AO_locks@Base 1:7.4.2
  (arch=armel)AO_pause@Base 1:7.4.2
  (arch=armel)AO_pt_lock@Base 1:7.4.2
  (arch=armel)AO_store_full_emulation@Base 1:7.4.2
