@@ -1,8 +1,8 @@
 
 Various manpage changes. Imported semi-automatically from .diff.gz.
 
-diff --git a/doc/gc.man b/doc/gc.man
-index 2a550c7..5c0232a 100644
+Index: b/doc/gc.man
+===================================================================
 --- a/doc/gc.man
 +++ b/doc/gc.man
 @@ -1,8 +1,8 @@
@@ -20,8 +20,8 @@ index 2a550c7..5c0232a 100644
  void * GC_realloc(void *ptr, size_t size);
  .br
  .sp
--cc ... gc.a
-++ cc ... -I/usr/include/gc -lgc
+-cc ... -lgc
++cc ... -I/usr/include/gc -lgc
  .LP
  .SH DESCRIPTION
  .I GC_malloc

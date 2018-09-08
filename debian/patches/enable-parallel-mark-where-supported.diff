@@ -1,8 +1,8 @@
-diff --git a/configure.ac b/configure.ac
-index 7667949..f146e52 100644
+Index: b/configure.ac
+===================================================================
 --- a/configure.ac
 +++ b/configure.ac
-@@ -177,7 +177,9 @@ case "$THREADS" in
+@@ -184,7 +184,9 @@ case "$THREADS" in
      AC_CHECK_LIB(pthread, pthread_self, THREADDLLIBS="-lpthread",,)
      case "$host" in
       x86-*-linux* | ia64-*-linux* | i586-*-linux* | i686-*-linux* \

@@ -25,10 +25,22 @@
 # include "config.h"
 #endif
 
+#undef GC_NO_THREAD_REDIRECTS
 #include "gc_disclaim.h"
+
+#ifdef LINT2
+  /* Avoid include gc_priv.h. */
+# ifndef GC_API_PRIV
+#   define GC_API_PRIV GC_API
+# endif
+  GC_API_PRIV long GC_random(void);
+# undef rand
+# define rand() (int)GC_random()
+#endif /* LINT2 */
 
 #define my_assert(e) \
     if (!(e)) { \
+        fflush(stdout); \
         fprintf(stderr, "Assertion failure, line %d: " #e "\n", __LINE__); \
         exit(-1); \
     }
@@ -73,11 +85,18 @@ void test_misc_sizes(void)
 typedef struct pair_s *pair_t;
 
 struct pair_s {
-    int is_valid;
+    char magic[16];
     int checksum;
     pair_t car;
     pair_t cdr;
 };
+
+static const char * const pair_magic = "PAIR_MAGIC_BYTES";
+
+int is_pair(pair_t p)
+{
+    return memcmp(p->magic, pair_magic, sizeof(p->magic)) == 0;
+}
 
 void GC_CALLBACK pair_dct(void *obj, void *cd)
 {
@@ -90,16 +109,16 @@ void GC_CALLBACK pair_dct(void *obj, void *cd)
              (void *)p, (void *)p->car, (void *)p->cdr);
 #   endif
     my_assert(GC_base(obj));
-    my_assert(p->is_valid);
-    my_assert(!p->car || p->car->is_valid);
-    my_assert(!p->cdr || p->cdr->is_valid);
+    my_assert(is_pair(p));
+    my_assert(!p->car || is_pair(p->car));
+    my_assert(!p->cdr || is_pair(p->cdr));
     checksum = 782;
     if (p->car) checksum += p->car->checksum;
     if (p->cdr) checksum += p->cdr->checksum;
     my_assert(p->checksum == checksum);
 
     /* Invalidate it. */
-    p->is_valid = 0;
+    memset(p->magic, '*', sizeof(p->magic));
     p->checksum = 0;
     p->car = cd;
     p->cdr = NULL;
@@ -116,8 +135,9 @@ pair_new(pair_t car, pair_t cdr)
         fprintf(stderr, "Out of memory!\n");
         exit(3);
     }
+    my_assert(!is_pair(p));
     my_assert(memeq(p, 0, sizeof(struct pair_s)));
-    p->is_valid = 1;
+    memcpy(p->magic, pair_magic, sizeof(p->magic));
     p->checksum = 782 + (car? car->checksum : 0) + (cdr? cdr->checksum : 0);
     p->car = car;
     p->cdr = cdr;
@@ -156,7 +176,7 @@ pair_check_rec(pair_t p)
 #else
 #  define MUTATE_CNT 10000000
 #endif
-#define GROW_LIMIT 10000000
+#define GROW_LIMIT (MUTATE_CNT/10)
 
 void *test(void *data)
 {
