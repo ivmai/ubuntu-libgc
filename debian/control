@@ -5,13 +5,13 @@ Section: libs
 Priority: standard
 Build-Depends: debhelper (>= 9),
  dh-autoreconf,
- libatomic-ops-dev (>= 7.3~),
+ libatomic-ops-dev (>= 7.6~),
  pkg-config,
  pkg-kde-tools
-Standards-Version: 3.9.6
+Standards-Version: 4.2.1
 Homepage: http://www.hboehm.info/gc/
-Vcs-Git: git://anonscm.debian.org/collab-maint/libgc.git
-Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/libgc.git
+#Vcs-Git: git://anonscm.debian.org/collab-maint/libgc.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/libgc.git
 
 Package: libgc1c2
 Architecture: any

@@ -1,8 +1,8 @@
-Index: libgc/include/gc_config_macros.h
+Index: b/include/gc_config_macros.h
 ===================================================================
---- libgc.orig/include/gc_config_macros.h	2013-06-09 13:26:20.000000000 +0200
-+++ libgc/include/gc_config_macros.h	2013-06-09 13:53:15.012504958 +0200
-@@ -121,6 +121,10 @@
+--- a/include/gc_config_macros.h
++++ b/include/gc_config_macros.h
+@@ -122,6 +122,10 @@
  # if defined(__rtems__) && (defined(i386) || defined(__i386__))
  #   define GC_RTEMS_PTHREADS
  # endif
