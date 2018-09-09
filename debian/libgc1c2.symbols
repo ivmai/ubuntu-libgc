@@ -621,7 +621,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_start_debugging@Base 1:7.2d
  GC_start_debugging_inner@Base 1:7.4.2
  GC_start_mark_threads@Base 1:7.4.2
- (arch=!arm64 !hppa !hurd-i386 !ppc64el !sh4)GC_start_mark_threads_inner@Base 1:7.6.4
+ (arch=!arm64 !hppa !hurd-i386 !ppc64el !sh4 !kfreebsd-amd64 !kfreebsd-i386)GC_start_mark_threads_inner@Base 1:7.6.4
  GC_start_reclaim@Base 1:7.2d
  GC_start_routine@Base 1:7.2d
  GC_start_rtn_prepare_thread@Base 1:7.2d
@@ -678,7 +678,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_version@Base 1:7.2d
  (arch=!arm64 !nios2 !hppa !hurd-i386 !kfreebsd-amd64 !kfreebsd-i386 !ppc64el !sh4)GC_wait_builder@Base 1:7.4.2
  GC_wait_for_gc_completion@Base 1:7.2d
- (arch=!arm64 !hppa !hurd-i386 !ppc64el !sh4)GC_wait_for_markers_init@Base 1:7.6.4
+ (arch=!arm64 !hppa !hurd-i386 !kfreebsd-amd64 !kfreebsd-i386 !ppc64el !sh4)GC_wait_for_markers_init@Base 1:7.6.4
  (arch=!arm64 !nios2 !hppa !hurd-i386 !kfreebsd-amd64 !kfreebsd-i386 !ppc64el !sh4)GC_wait_for_reclaim@Base 1:7.4.2
  (arch=!arm64 !nios2 !hppa !hurd-i386 !kfreebsd-amd64 !kfreebsd-i386 !ppc64el !sh4)GC_wait_marker@Base 1:7.4.2
  GC_with_callee_saves_pushed@Base 1:7.2d
