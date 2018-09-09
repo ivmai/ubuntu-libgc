@@ -1,8 +1,8 @@
-# SymbolsHelper-Confirmed: 1:7.4.2 alpha amd64 arm64 armel armhf hppa hurd-i386 i386 kfreebsd-amd64 kfreebsd-i386 mips mips64el mipsel powerpc powerpcspe ppc64 ppc64el s390x x32
+# SymbolsHelper-Confirmed: 1:7.6.4 alpha amd64 arm64 armel armhf hppa hurd-i386 i386 ia64 m68k mips mipsel mips64el powerpc powerpcspe ppc64 ppc64el s390x sh4 sparc64 x32 kfreebsd-amd64
 libgc.so.1 libgc1c2 #MINVER#
  (arch=armel)AO_compare_double_and_swap_double_emulation@Base 1:7.4.2
  (arch=armel)AO_fetch_compare_and_swap_emulation@Base 1:7.4.2
- (arch=armel)AO_locks@Base 1:7.4.2
+#MISSING: 1:7.6.4# (arch=armel)AO_locks@Base 1:7.4.2
  (arch=armel)AO_pause@Base 1:7.4.2
  (arch=armel)AO_pt_lock@Base 1:7.4.2
  (arch=armel)AO_store_full_emulation@Base 1:7.4.2
@@ -444,6 +444,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_page_was_dirty@Base 1:7.2d
  GC_pages_executable@Base 1:7.2d
  GC_parallel@Base 1:7.2d
+ (arch=ia64)GC_parse_map_entry@Base 1:7.6.4
  GC_parse_mem_size_arg@Base 1:7.2d
  GC_pause@Base 1:7.2d
  GC_posix_memalign@Base 1:7.2d
@@ -490,8 +491,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_push_finalizer_structures@Base 1:7.2d
  GC_push_gc_structures@Base 1:7.2d
  (arch=arm64 nios2 hppa hurd-i386 kfreebsd-amd64 kfreebsd-i386 ppc64el sh4)GC_push_marked1@Base 1:7.4.2
- (arch=!alpha !amd64 !armel !armhf !i386 !m68k !mips !mips64el !mipsel !powerpc !powerpcspe !ppc64 !s390x !sparc !sparc64 !x32)GC_push_marked2@Base 1:7.4.2
- (arch=!alpha !amd64 !armel !armhf !i386 !m68k !mips !mips64el !mipsel !powerpc !powerpcspe !ppc64 !s390x !sparc !sparc64 !x32)GC_push_marked4@Base 1:7.4.2
+ (arch=!alpha !amd64 !armel !armhf !i386 !ia64 !m68k !mips !mips64el !mipsel !powerpc !powerpcspe !ppc64 !s390x !sparc !sparc64 !x32)GC_push_marked2@Base 1:7.4.2
+ (arch=!alpha !amd64 !armel !armhf !i386 !ia64 !m68k !mips !mips64el !mipsel !powerpc !powerpcspe !ppc64 !s390x !sparc !sparc64 !x32)GC_push_marked4@Base 1:7.4.2
  GC_push_marked@Base 1:7.2d
  GC_push_next_marked@Base 1:7.2d
  GC_push_next_marked_dirty@Base 1:7.2d
@@ -550,7 +551,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_remove_root_at_pos@Base 1:7.2d
  GC_remove_roots@Base 1:7.2d
  GC_remove_roots_inner@Base 1:7.2d
- (arch=hurd-i386)GC_remove_specific@Base 1:7.4.2
+#MISSING: 1:7.6.4# (arch=hurd-i386)GC_remove_specific@Base 1:7.4.2
+ (arch=hurd-i386)GC_remove_specific_after_fork@Base 1:7.6.4
  GC_remove_tmp_roots@Base 1:7.2d
  (arch=!hurd-i386 !kfreebsd-amd64 !kfreebsd-i386)GC_repeat_read@Base 1:7.2d
  (arch=!arm64 !nios2 !mips !mips64el !mipsel !s390 !s390x)GC_reset_fault_handler@Base 1:7.2d
@@ -619,7 +621,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_start_debugging@Base 1:7.2d
  GC_start_debugging_inner@Base 1:7.4.2
  GC_start_mark_threads@Base 1:7.4.2
- GC_start_mark_threads_inner@Base 1:7.6.4
+ (arch=!arm64 !hppa !hurd-i386 !ppc64el !sh4)GC_start_mark_threads_inner@Base 1:7.6.4
  GC_start_reclaim@Base 1:7.2d
  GC_start_routine@Base 1:7.2d
  GC_start_rtn_prepare_thread@Base 1:7.2d
@@ -662,8 +664,8 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_typed_mark_proc@Base 1:7.2d
  GC_typed_mark_proc_index@Base 1:7.2d
  GC_unix_get_mem@Base 1:7.2d
- (arch=!hurd-i386)GC_unix_mmap_get_mem@Base 1:7.2d
- GC_unix_sbrk_get_mem@Base 1:7.2d
+ GC_unix_mmap_get_mem@Base 1:7.6.4
+ (arch=!hurd-i386)GC_unix_sbrk_get_mem@Base 1:7.6.4
  GC_unpromote_black_lists@Base 1:7.2d
  GC_unreachable_finalize_mark_proc@Base 1:7.2d
  GC_unregister_disappearing_link@Base 1:7.2d
@@ -676,7 +678,7 @@ libgc.so.1 libgc1c2 #MINVER#
  GC_version@Base 1:7.2d
  (arch=!arm64 !nios2 !hppa !hurd-i386 !kfreebsd-amd64 !kfreebsd-i386 !ppc64el !sh4)GC_wait_builder@Base 1:7.4.2
  GC_wait_for_gc_completion@Base 1:7.2d
- GC_wait_for_markers_init@Base 1:7.6.4
+ (arch=!arm64 !hppa !hurd-i386 !ppc64el !sh4)GC_wait_for_markers_init@Base 1:7.6.4
  (arch=!arm64 !nios2 !hppa !hurd-i386 !kfreebsd-amd64 !kfreebsd-i386 !ppc64el !sh4)GC_wait_for_reclaim@Base 1:7.4.2
  (arch=!arm64 !nios2 !hppa !hurd-i386 !kfreebsd-amd64 !kfreebsd-i386 !ppc64el !sh4)GC_wait_marker@Base 1:7.4.2
  GC_with_callee_saves_pushed@Base 1:7.2d
@@ -688,10 +690,14 @@ libgc.so.1 libgc1c2 #MINVER#
  (arch=kfreebsd-amd64 kfreebsd-i386)etext@Base 1:7.2d
 libgccpp.so.1 libgc1c2 #MINVER#
  _ZdaPv@Base 1:7.2d
- _ZdaPvm@Base 1:7.6.4
+ (arch-bits=32)_ZdaPvj@Base 1:7.6.4
+ (arch-bits=64)_ZdaPvm@Base 1:7.6.4
  _ZdlPv@Base 1:7.2d
- _ZdlPvm@Base 1:7.6.4
- _Znam@Base 1:7.6
- _Znwm@Base 1:7.6
+ (arch-bits=32)_ZdlPvj@Base 1:7.6.4
+ (arch-bits=64)_ZdlPvm@Base 1:7.6.4
+ (arch-bits=32)_Znaj@Base 1:7.6.4
+ (arch-bits=64)_Znam@Base 1:7.6.4
+ (arch-bits=32)_Znwj@Base 1:7.6.4
+ (arch-bits=64)_Znwm@Base 1:7.6.4
  (arch=sparc sparc64)_etext@Base 1:7.2d
  (arch=kfreebsd-amd64 kfreebsd-i386)etext@Base 1:7.2d
