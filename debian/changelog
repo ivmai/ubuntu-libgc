@@ -1,3 +1,10 @@
+libgc (1:7.6.4-0.4) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix symbols files for KFreeBSD.
+
+ -- Matthias Klose <doko@debian.org>  Sun, 09 Sep 2018 15:25:27 +0200
+
 libgc (1:7.6.4-0.3) unstable; urgency=medium
 
   * Non-maintainer upload.
