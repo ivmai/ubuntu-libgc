@@ -1,3 +1,17 @@
+libgc (1:7.6.4-0.3) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Update symbols files for various architectures.
+
+ -- Matthias Klose <doko@debian.org>  Sun, 09 Sep 2018 13:58:06 +0200
+
+libgc (1:7.6.4-0.2) experimental; urgency=medium
+
+  * Non-maintainer upload.
+  * Update symbols files for various architectures.
+
+ -- Matthias Klose <doko@debian.org>  Sun, 09 Sep 2018 11:25:05 +0200
+
 libgc (1:7.6.4-0.1) experimental; urgency=medium
 
   * Non-maintainer upload.
