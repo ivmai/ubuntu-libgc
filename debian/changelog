@@ -1,3 +1,17 @@
+libgc (1:8.0.4-0.1) experimental; urgency=medium
+
+  * Non-maintainer upload.
+  * New upstream release (Closes: #911729).
+  * Pass --enable-large-config to configure (Closes: #493784,
+    #581029).
+  * Pass --enable-static to configure (upstream produces only shared
+    libs by default).
+  * Remove enable-parallel-mark-where-supported.diff (PARALLEL_MARK
+    is on for all linux platforms by default).
+  * Remove enable-threads-on-hurd.diff (not needed for upstream).
+
+ -- Ivan Maidanski <ivmai@mail.ru>  Sat, 11 May 2019 23:48:00 +0300
+
 libgc (1:7.6.4-0.4) unstable; urgency=medium
 
   * Non-maintainer upload.
@@ -159,7 +173,7 @@ libgc (1:7.2d-4) unstable; urgency=low
 
 libgc (1:7.2d-3) unstable; urgency=low
 
-  * Upload to unstable 
+  * Upload to unstable
     * 7.2 misses some private symbols which are now properly hidden by
       libgc and were unused by other software in debian
   * Generate Symbols file by pkg-kde helper scripts
@@ -705,4 +719,3 @@ libgc4 (4.12-4.13alpha1-1) unstable; urgency=low
   * Initial release.  This will need to be split into -dev, etc later...
 
  -- Rob Browning <rlb@cs.utexas.edu>  Fri, 26 Jun 1998 23:48:09 -0500
-
