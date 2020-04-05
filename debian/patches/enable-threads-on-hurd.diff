@@ -2,7 +2,7 @@ Index: b/include/gc_config_macros.h
 ===================================================================
 --- a/include/gc_config_macros.h
 +++ b/include/gc_config_macros.h
-@@ -122,6 +122,10 @@
+@@ -125,6 +125,10 @@
  # if defined(__rtems__) && (defined(i386) || defined(__i386__))
  #   define GC_RTEMS_PTHREADS
  # endif

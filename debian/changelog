@@ -1,3 +1,14 @@
+libgc (1:8.0.4-1~exp1) experimental; urgency=medium
+
+  * Team upload.
+  * New upstream version.
+    - Missing symbols: GC_fault_handler_lock, GC_start_debugging,
+      GC_store_debug_info, GC_unix_sbrk_get_mem.
+  * Configure with --enable-static --enable-docs.
+  * Bump standards version.
+
+ -- Matthias Klose <doko@debian.org>  Sun, 05 Apr 2020 12:03:18 +0200
+
 libgc (1:7.6.4-0.4) unstable; urgency=medium
 
   * Non-maintainer upload.
