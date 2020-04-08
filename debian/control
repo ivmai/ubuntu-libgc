@@ -2,9 +2,8 @@ Source: libgc
 Maintainer: Christoph Egger <christoph@debian.org>
 Uploaders: Debian GCC Maintainers <debian-gcc@lists.debian.org>
 Section: libs
-Priority: standard
-Build-Depends: debhelper (>= 9),
- dh-autoreconf,
+Priority: optional
+Build-Depends: debhelper (>= 11),
  libatomic-ops-dev (>= 7.6~),
  pkg-config,
  pkg-kde-tools
@@ -13,12 +12,12 @@ Homepage: http://www.hboehm.info/gc/
 #Vcs-Git: git://anonscm.debian.org/collab-maint/libgc.git
 #Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/libgc.git
 
-Package: libgc1c2
+Package: libgc1
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Conflicts: libgc1
-Replaces: libgc1, libgc1c3
+Conflicts: libgc1c2
+Replaces: libgc1c2
 Multi-Arch: same
 Description: conservative garbage collector for C and C++
  Boehm-Demers-Weiser's GC is a garbage collecting storage allocator that is
@@ -35,9 +34,8 @@ Description: conservative garbage collector for C and C++
 
 Package: libgc-dev
 Architecture: any
-Priority: optional
 Section: libdevel
-Depends: ${misc:Depends}, libgc1c2 (= ${binary:Version}), libc-dev
+Depends: ${misc:Depends}, libgc1 (= ${binary:Version}), libc-dev
 Multi-Arch: same
 Description: conservative garbage collector for C (development)
  Boehm-Demers-Weiser's GC is a garbage collecting storage allocator that is

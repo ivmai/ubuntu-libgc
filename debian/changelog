@@ -1,3 +1,13 @@
+libgc (1:8.0.4-1~exp3) experimental; urgency=medium
+
+  * Team upload.
+  * Update symbols files.
+  * Rename libgc1c2 to libgc1, some missing symbols.
+  * Lower priority to optional.
+  * Bump debhelper to v11.
+
+ -- Matthias Klose <doko@debian.org>  Wed, 08 Apr 2020 12:48:04 +0200
+
 libgc (1:8.0.4-1~exp1) experimental; urgency=medium
 
   * Team upload.
