@@ -1,3 +1,10 @@
+libgc (1:8.0.4-1~exp4) experimental; urgency=medium
+
+  * Team upload.
+  * Update symbols file for riscv64.
+
+ -- Matthias Klose <doko@ubuntu.com>  Fri, 17 Apr 2020 10:21:02 +0200
+
 libgc (1:8.0.4-1~exp3) experimental; urgency=medium
 
   * Team upload.
