@@ -1,3 +1,10 @@
+libgc (1:8.0.4-2) unstable; urgency=medium
+
+  * Fix missing libgc-dev -> libatomic-ops-dev dependency (Helmut Grohne).
+    Closes: #966651.
+
+ -- Matthias Klose <doko@debian.org>  Mon, 03 Aug 2020 18:53:35 +0200
+
 libgc (1:8.0.4-1) unstable; urgency=medium
 
   * Team upload.

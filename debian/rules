@@ -45,3 +45,6 @@ override_dh_auto_clean:
 
 override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog
+
+override_dh_gencontrol:
+	dh_gencontrol -- -Vatomic:Depends=$$(grep -q '[-]latomic_ops' debian/libgc-dev/usr/lib/*/pkgconfig/*.pc && echo libatomic-ops-dev)

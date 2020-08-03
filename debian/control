@@ -35,7 +35,7 @@ Description: conservative garbage collector for C and C++
 Package: libgc-dev
 Architecture: any
 Section: libdevel
-Depends: ${misc:Depends}, libgc1 (= ${binary:Version}), libc-dev
+Depends: ${misc:Depends}, libgc1 (= ${binary:Version}), libc-dev, ${atomic:Depends}
 Multi-Arch: same
 Description: conservative garbage collector for C (development)
  Boehm-Demers-Weiser's GC is a garbage collecting storage allocator that is
