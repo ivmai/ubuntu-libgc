@@ -1,3 +1,10 @@
+libgc (1:8.0.4-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix symbols files for kfreebsd-*. (Closes: #968385)
+
+ -- Christoph Berg <myon@debian.org>  Tue, 27 Oct 2020 14:32:21 +0100
+
 libgc (1:8.0.4-2) unstable; urgency=medium
 
   * Fix missing libgc-dev -> libatomic-ops-dev dependency (Helmut Grohne).
