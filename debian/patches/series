@@ -1,1 +1,2 @@
 enable-threads-on-hurd.diff
+issue329.diff
